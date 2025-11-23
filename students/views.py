@@ -4,10 +4,18 @@ from django.contrib import messages
 from django.db.models import Q
 from django.http import HttpRequest, HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render
+from django.utils import timezone
 
 from .forms import StudentForm
 from .models import Student
-from .services import count_status, fetch_external_data, generate_group_stats
+from .services import (
+    build_chart_data,
+    count_status,
+    export_students_csv,
+    export_students_excel,
+    fetch_external_data,
+    generate_group_stats,
+)
 
 
 def dashboard(request: HttpRequest) -> HttpResponse:
@@ -16,12 +24,14 @@ def dashboard(request: HttpRequest) -> HttpResponse:
     status_counts = count_status(students)
     groups_count = students.values('group').distinct().count()
     stats_by_group = generate_group_stats(students)
+    charts = build_chart_data(stats_by_group, status_counts)
 
     context = {
         'students_total': students.count(),
         'status_counts': status_counts,
         'groups_count': groups_count,
         'stats_by_group': stats_by_group,
+        'charts': charts,
     }
     return render(request, 'students/dashboard.html', context)
 
@@ -107,3 +117,24 @@ def external_api_view(request: HttpRequest) -> HttpResponse:
     except Exception as exc:  # pragma: no cover - manejo de conectividad
         error = f"No fue posible obtener la información externa: {exc}"
     return render(request, 'students/external_api.html', {'records': records, 'error': error})
+
+
+def export_students_csv_view(request: HttpRequest) -> HttpResponse:
+    """Devuelve todos los estudiantes en formato CSV descargable."""
+    filename = f"estudiantes_{timezone.now().strftime('%Y%m%d_%H%M%S')}.csv"
+    content = export_students_csv(Student.objects.all())
+    response = HttpResponse(content, content_type='text/csv; charset=utf-8')
+    response['Content-Disposition'] = f'attachment; filename="{filename}"'
+    return response
+
+
+def export_students_excel_view(request: HttpRequest) -> HttpResponse:
+    """Devuelve todos los estudiantes en formato Excel (xlsx)."""
+    filename = f"estudiantes_{timezone.now().strftime('%Y%m%d_%H%M%S')}.xlsx"
+    buffer = export_students_excel(Student.objects.all())
+    response = HttpResponse(
+        buffer.getvalue(),
+        content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+    )
+    response['Content-Disposition'] = f'attachment; filename="{filename}"'
+    return response

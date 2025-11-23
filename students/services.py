@@ -1,6 +1,7 @@
 """Servicios de negocio y utilidades de datos."""
 from __future__ import annotations
 from typing import Iterable
+from io import BytesIO
 import pandas as pd
 import requests
 from django.conf import settings
@@ -44,3 +45,50 @@ def fetch_external_data(limit: int = 10) -> list[dict]:
             'poblacion': entry.get('population'),
         })
     return countries
+
+
+def dataframe_from_students(students: Iterable[Student]) -> pd.DataFrame:
+    """Crea un DataFrame a partir de una lista/queryset de estudiantes."""
+    records = [
+        {
+            'Nombre': s.first_name,
+            'Apellidos': s.last_name,
+            'Matrícula': s.matricula,
+            'Email': s.email,
+            'Teléfono': s.phone,
+            'Grupo': s.group,
+            'Estado': s.status,
+            'Notas': s.notes,
+            'Registrado': s.created_at,
+        }
+        for s in students
+    ]
+    return pd.DataFrame(records)
+
+
+def export_students_csv(students: Iterable[Student]) -> bytes:
+    """Genera un CSV en bytes usando pandas a partir de los estudiantes."""
+    df = dataframe_from_students(students)
+    return df.to_csv(index=False).encode('utf-8-sig')
+
+
+def export_students_excel(students: Iterable[Student]) -> BytesIO:
+    """Genera un archivo Excel (xlsx) en un buffer para descarga."""
+    df = dataframe_from_students(students)
+    output = BytesIO()
+    # Se usa openpyxl como motor por defecto para compatibilidad con pandas
+    df.to_excel(output, index=False, engine='openpyxl')
+    output.seek(0)
+    return output
+
+
+def build_chart_data(stats_by_group: list[dict], status_counts: dict) -> dict:
+    """Crea diccionarios con datos listos para graficar en Chart.js."""
+    group_labels = [row['grupo'] for row in stats_by_group]
+    group_values = [row['total'] for row in stats_by_group]
+    status_labels = ['Activo', 'Inactivo']
+    status_values = [status_counts.get('activo', 0), status_counts.get('inactivo', 0)]
+    return {
+        'group': {'labels': group_labels, 'values': group_values},
+        'status': {'labels': status_labels, 'values': status_values},
+    }

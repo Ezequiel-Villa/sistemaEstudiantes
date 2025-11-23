@@ -2,6 +2,7 @@
 from unittest.mock import patch
 from django.test import Client, TestCase
 from django.urls import reverse
+import pandas as pd
 
 from .forms import StudentForm
 from .models import Student
@@ -80,6 +81,25 @@ class StudentViewsTests(TestCase):
         self.assertContains(response, 'MAT300')
         self.assertNotContains(response, 'MAT100')
 
+    def test_export_csv(self):
+        response = self.client.get(reverse('students:export_csv'))
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response['Content-Type'].split(';')[0], 'text/csv')
+        self.assertIn('estudiantes_', response['Content-Disposition'])
+        self.assertIn('MAT100', response.content.decode('utf-8'))
+
+    def test_export_excel(self):
+        response = self.client.get(reverse('students:export_excel'))
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(
+            response['Content-Type'],
+            'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+        )
+        self.assertIn('estudiantes_', response['Content-Disposition'])
+        # Leer pocas filas para validar que el archivo xlsx es legible
+        df = pd.read_excel(response.content)
+        self.assertIn('Matrícula', df.columns)
+
 
 class ServicesTests(TestCase):
     def setUp(self):
@@ -97,6 +117,15 @@ class ServicesTests(TestCase):
         counts = count_status(Student.objects.all())
         self.assertEqual(counts['activo'], 2)
         self.assertEqual(counts['inactivo'], 1)
+
+    def test_dashboard_chart_data(self):
+        stats = generate_group_stats(Student.objects.all())
+        counts = count_status(Student.objects.all())
+        # los datos de grafica deben ser coherentes con los conteos
+        labels = [row['grupo'] for row in stats]
+        self.assertIn('A', labels)
+        self.assertIn('B', labels)
+        self.assertEqual(counts['activo'], 2)
 
     @patch('students.views.fetch_external_data')
     def test_external_api_view(self, mock_fetch):

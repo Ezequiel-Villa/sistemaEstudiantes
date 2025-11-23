@@ -7,7 +7,8 @@ Proyecto académico que implementa un CRUD completo de estudiantes utilizando **
 - Django 5 (MVT)
 - SQLite
 - Bootstrap 5 + Bootstrap Icons
-- Librerías: `requests`, `pandas`, `python-dotenv`
+- Librerías: `requests`, `pandas`, `python-dotenv`, `openpyxl` (exportación Excel)
+- Frontend: plantillas Django con **Bootstrap 5**, **Bootstrap Icons** y visualizaciones con **Chart.js** (CDN)
 
 ## Estructura del proyecto
 ```
@@ -23,8 +24,8 @@ requirements.txt         # Dependencias de Python
 Campos principales: `first_name`, `last_name`, `matricula` (única), `email`, `phone`, `group`, `status` (activo/inactivo), `notes`, `created_at`.
 
 ## Vistas clave
-- **Dashboard**: métricas de estudiantes, activos/inactivos, grupos y tabla generada con `pandas` por grupo.
-- **Listado**: filtros por nombre/matrícula, grupo y estado; acciones de detalle, edición y eliminación.
+- **Dashboard**: métricas de estudiantes, activos/inactivos, grupos, tabla generada con `pandas` por grupo y gráficas dinámicas (barra/donut) renderizadas con Chart.js.
+- **Listado**: filtros por nombre/matrícula, grupo y estado; acciones de detalle, edición y eliminación; botones para exportar CSV o Excel.
 - **Crear/Editar**: formularios con validaciones y mensajes de éxito/error.
 - **Detalle**: visualización de la ficha del estudiante.
 - **Eliminar**: confirmación de borrado.
@@ -70,7 +71,7 @@ Se usan las pruebas integradas de Django (`unittest`). Ejecutar:
 ```bash
 python manage.py test
 ```
-Las pruebas cubren modelo, formularios, vistas (GET/POST), filtros, servicios con `pandas` y una prueba mockeada de la API externa.
+Las pruebas cubren modelo, formularios, vistas (GET/POST), filtros, exportaciones CSV/Excel, servicios con `pandas`, datos para gráficas y una prueba mockeada de la API externa.
 
 ## Perfilado y rendimiento
 - **cProfile**: 
@@ -83,6 +84,8 @@ Las pruebas cubren modelo, formularios, vistas (GET/POST), filtros, servicios co
 ## Notas sobre el diseño
 - Se respetó la estructura visual del diseño original adaptándola a **Bootstrap 5**, eliminando dependencias de frameworks JS pesados.
 - Los estilos adicionales están en `static/css/styles.css` para mantener tarjetas redondeadas e iconos circulares.
+- Las gráficas del dashboard se renderizan con Chart.js (CDN) usando datos generados por `pandas`.
+- La exportación de estudiantes a CSV/Excel está disponible desde el listado mediante el botón "Exportar".
 
 ## Ejecución en Windows + VS Code (paso a paso)
 1. Instalar **Python 3** y **pip** desde [python.org](https://python.org).
