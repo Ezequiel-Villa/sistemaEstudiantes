@@ -1,8 +1,16 @@
 """Script sencillo para perfilar vistas y funciones clave."""
+import os
 import cProfile
 import pstats
 from pathlib import Path
 from timeit import timeit
+
+# Configuramos Django para poder importar vistas/modelos sin runserver
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "student_registry.settings")
+import django
+
+django.setup()
+
 from django.test import RequestFactory
 
 from students.views import dashboard
