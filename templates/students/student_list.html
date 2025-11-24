@@ -1,0 +1,93 @@
+{% extends 'base.html' %}
+{% block title %}Estudiantes{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <div>
+        <h2 class="mb-0">Estudiantes</h2>
+        <small class="text-muted">Consulta, filtra y administra la lista completa.</small>
+    </div>
+    <div class="d-flex gap-2 flex-wrap justify-content-end">
+        <div class="btn-group">
+            <button class="btn btn-outline-secondary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false"><i class="bi bi-download"></i> Exportar</button>
+            <ul class="dropdown-menu dropdown-menu-end">
+                <li><a class="dropdown-item" href="{% url 'students:export_csv' %}"><i class="bi bi-file-earmark-spreadsheet"></i> CSV</a></li>
+                <li><a class="dropdown-item" href="{% url 'students:export_excel' %}"><i class="bi bi-file-earmark-excel"></i> Excel</a></li>
+            </ul>
+        </div>
+        <a class="btn btn-outline-secondary" href="{% url 'students:dashboard' %}"><i class="bi bi-speedometer2"></i> Dashboard</a>
+        <a class="btn btn-primary" href="{% url 'students:student_create' %}"><i class="bi bi-person-plus"></i> Nuevo</a>
+    </div>
+</div>
+
+<div class="card shadow-sm border-0">
+    <div class="card-body">
+        <form class="row gy-2 gx-3 align-items-center mb-3" method="get">
+            <div class="col-md-4">
+                <label class="form-label mb-1">Buscar por nombre o matrícula</label>
+                <input type="text" name="q" value="{{ query }}" class="form-control" placeholder="Ej: Juan" />
+            </div>
+            <div class="col-md-3">
+                <label class="form-label mb-1">Grupo</label>
+                <select name="group" class="form-select">
+                    <option value="">Todos</option>
+                    {% for group in groups %}
+                        <option value="{{ group }}" {% if group_filter == group %}selected{% endif %}>{{ group }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-3">
+                <label class="form-label mb-1">Estado</label>
+                <select name="status" class="form-select">
+                    <option value="">Todos</option>
+                    <option value="activo" {% if status_filter == 'activo' %}selected{% endif %}>Activo</option>
+                    <option value="inactivo" {% if status_filter == 'inactivo' %}selected{% endif %}>Inactivo</option>
+                </select>
+            </div>
+            <div class="col-md-2 d-flex align-items-end">
+                <button class="btn btn-outline-primary w-100" type="submit"><i class="bi bi-funnel"></i> Filtrar</button>
+            </div>
+        </form>
+
+        <div class="table-responsive">
+            <table class="table align-middle">
+                <thead class="table-light">
+                    <tr>
+                        <th>Nombre</th>
+                        <th>Matrícula</th>
+                        <th>Correo</th>
+                        <th>Grupo</th>
+                        <th>Estado</th>
+                        <th class="text-end">Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for student in students %}
+                        <tr>
+                            <td class="fw-semibold">{{ student.full_name }}</td>
+                            <td>{{ student.matricula }}</td>
+                            <td>{{ student.email }}</td>
+                            <td>{{ student.group }}</td>
+                            <td>
+                                {% if student.status == 'activo' %}
+                                    <span class="badge bg-success">Activo</span>
+                                {% else %}
+                                    <span class="badge bg-secondary">Inactivo</span>
+                                {% endif %}
+                            </td>
+                            <td class="text-end">
+                                <a class="btn btn-sm btn-outline-primary" href="{% url 'students:student_detail' student.pk %}"><i class="bi bi-eye"></i></a>
+                                <a class="btn btn-sm btn-outline-secondary" href="{% url 'students:student_update' student.pk %}"><i class="bi bi-pencil"></i></a>
+                                <a class="btn btn-sm btn-outline-danger" href="{% url 'students:student_delete' student.pk %}"><i class="bi bi-trash"></i></a>
+                            </td>
+                        </tr>
+                    {% empty %}
+                        <tr>
+                            <td colspan="6" class="text-center text-muted py-4">No se encontraron estudiantes con los filtros actuales.</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}
