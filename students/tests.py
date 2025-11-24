@@ -1,4 +1,5 @@
 """Pruebas unitarias para el módulo students."""
+from io import BytesIO
 from unittest.mock import patch
 from django.test import Client, TestCase
 from django.urls import reverse
@@ -97,7 +98,7 @@ class StudentViewsTests(TestCase):
         )
         self.assertIn('estudiantes_', response['Content-Disposition'])
         # Leer pocas filas para validar que el archivo xlsx es legible
-        df = pd.read_excel(response.content)
+        df = pd.read_excel(BytesIO(response.content))
         self.assertIn('Matrícula', df.columns)
 
 

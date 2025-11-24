@@ -5,6 +5,7 @@ from io import BytesIO
 import pandas as pd
 import requests
 from django.conf import settings
+from django.utils import timezone
 from .models import Student
 
 
@@ -59,7 +60,8 @@ def dataframe_from_students(students: Iterable[Student]) -> pd.DataFrame:
             'Grupo': s.group,
             'Estado': s.status,
             'Notas': s.notes,
-            'Registrado': s.created_at,
+            # Excel no admite zona horaria; convertimos a naive preservando hora local
+            'Registrado': timezone.make_naive(s.created_at) if timezone.is_aware(s.created_at) else s.created_at,
         }
         for s in students
     ]
