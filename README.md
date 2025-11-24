@@ -74,12 +74,16 @@ python manage.py test
 Las pruebas cubren modelo, formularios, vistas (GET/POST), filtros, exportaciones CSV/Excel, servicios con `pandas`, datos para gráficas y una prueba mockeada de la API externa.
 
 ## Perfilado y rendimiento
-- **cProfile**: 
+- **cProfile**:
   ```bash
   python profiling.py
   ```
-  Genera `profile_dashboard.prof` y muestra las 10 funciones más costosas de la vista de dashboard.
-- **timeit**: dentro del mismo script se mide `generate_group_stats` con datos simulados y se imprime el tiempo acumulado.
+  Genera `profile_dashboard.prof` y muestra las 10 funciones más costosas de la vista de dashboard. El script inicializa
+  Django automáticamente (no necesitas exportar `DJANGO_SETTINGS_MODULE`) y al final imprime el ranking. Una salida típica
+  muestra la vista `dashboard` como la más costosa, seguida de la renderización de plantillas, con un tiempo total cercano a
+  décimas de segundo en entornos locales.
+- **timeit**: dentro del mismo script se mide `generate_group_stats` con datos simulados y se imprime el tiempo acumulado. Si
+  ves tiempos en el orden de milisegundos o décimas de segundo para ~50 ejecuciones, el comportamiento es el esperado.
 
 ## Notas sobre el diseño
 - Se respetó la estructura visual del diseño original adaptándola a **Bootstrap 5**, eliminando dependencias de frameworks JS pesados.
