@@ -4,8 +4,8 @@ body {
     flex-direction: column;
 }
 .brand-logo {
-    width: 34px;
-    height: 34px;
+    width: 30px;
+    height: 30px;
 }
 .icon-circle {
     width: 48px;
@@ -27,6 +27,15 @@ footer {
 }
 .nav-link {
     transition: all 0.2s ease-in-out;
+}
+
+.navbar {
+    padding-top: 0.35rem;
+    padding-bottom: 0.35rem;
+}
+
+.navbar-brand {
+    font-size: 1.05rem;
 }
 
 .nav-link:hover {
