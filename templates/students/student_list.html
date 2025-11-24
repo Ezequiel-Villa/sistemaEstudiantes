@@ -39,8 +39,10 @@
                 <label class="form-label mb-1">Estado</label>
                 <select name="status" class="form-select">
                     <option value="">Todos</option>
-                    <option value="activo" {% if status_filter == 'activo' %}selected{% endif %}>Activo</option>
-                    <option value="inactivo" {% if status_filter == 'inactivo' %}selected{% endif %}>Inactivo</option>
+                    <option value="inscrito" {% if status_filter == 'inscrito' %}selected{% endif %}>Inscrito</option>
+                    <option value="baja_temporal" {% if status_filter == 'baja_temporal' %}selected{% endif %}>Baja temporal</option>
+                    <option value="baja_definitiva" {% if status_filter == 'baja_definitiva' %}selected{% endif %}>Baja definitiva</option>
+                    <option value="egresado" {% if status_filter == 'egresado' %}selected{% endif %}>Egresado</option>
                 </select>
             </div>
             <div class="col-md-2 d-flex align-items-end">
@@ -56,6 +58,7 @@
                         <th>Matrícula</th>
                         <th>Correo</th>
                         <th>Grupo</th>
+                        <th>Carrera</th>
                         <th>Estado</th>
                         <th class="text-end">Acciones</th>
                     </tr>
@@ -67,11 +70,16 @@
                             <td>{{ student.matricula }}</td>
                             <td>{{ student.email }}</td>
                             <td>{{ student.group }}</td>
+                            <td>{{ student.career }}</td>
                             <td>
-                                {% if student.status == 'activo' %}
-                                    <span class="badge bg-success">Activo</span>
+                                {% if student.status == 'inscrito' %}
+                                    <span class="badge bg-success">Inscrito</span>
+                                {% elif student.status == 'baja_temporal' %}
+                                    <span class="badge bg-warning text-dark">Baja temporal</span>
+                                {% elif student.status == 'baja_definitiva' %}
+                                    <span class="badge bg-danger">Baja definitiva</span>
                                 {% else %}
-                                    <span class="badge bg-secondary">Inactivo</span>
+                                    <span class="badge bg-info text-dark">Egresado</span>
                                 {% endif %}
                             </td>
                             <td class="text-end">

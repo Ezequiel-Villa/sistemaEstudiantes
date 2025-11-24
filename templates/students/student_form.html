@@ -13,16 +13,52 @@
         <form method="post" novalidate>
             {% csrf_token %}
             <div class="row g-3">
-                {% for field in form %}
-                    <div class="col-md-6">
-                        <label class="form-label">{{ field.label }}{% if field.field.required %} <span class="text-danger">*</span>{% endif %}</label>
-                        {{ field }}
-                        {% if field.help_text %}<div class="form-text">{{ field.help_text }}</div>{% endif %}
-                        {% for error in field.errors %}
-                            <div class="text-danger small">{{ error }}</div>
-                        {% endfor %}
-                    </div>
-                {% endfor %}
+                <div class="col-md-6 col-lg-4">
+                    <label class="form-label">{{ form.first_name.label }} <span class="text-danger">*</span></label>
+                    {{ form.first_name }}
+                    {% for error in form.first_name.errors %}<div class="text-danger small">{{ error }}</div>{% endfor %}
+                </div>
+                <div class="col-md-6 col-lg-4">
+                    <label class="form-label">{{ form.last_name.label }} <span class="text-danger">*</span></label>
+                    {{ form.last_name }}
+                    {% for error in form.last_name.errors %}<div class="text-danger small">{{ error }}</div>{% endfor %}
+                </div>
+                <div class="col-md-6 col-lg-4">
+                    <label class="form-label">{{ form.career.label }} <span class="text-danger">*</span></label>
+                    {{ form.career }}
+                    {% for error in form.career.errors %}<div class="text-danger small">{{ error }}</div>{% endfor %}
+                </div>
+                <div class="col-md-4 col-lg-3">
+                    <label class="form-label">{{ form.matricula.label }} <span class="text-danger">*</span></label>
+                    {{ form.matricula }}
+                    {% for error in form.matricula.errors %}<div class="text-danger small">{{ error }}</div>{% endfor %}
+                </div>
+                <div class="col-md-4 col-lg-3">
+                    <label class="form-label">{{ form.group.label }} <span class="text-danger">*</span></label>
+                    {{ form.group }}
+                    {% for error in form.group.errors %}<div class="text-danger small">{{ error }}</div>{% endfor %}
+                </div>
+                <div class="col-md-4 col-lg-3">
+                    <label class="form-label">{{ form.status.label }} <span class="text-danger">*</span></label>
+                    {{ form.status }}
+                    {% for error in form.status.errors %}<div class="text-danger small">{{ error }}</div>{% endfor %}
+                </div>
+                <div class="col-md-6 col-lg-4">
+                    <label class="form-label">{{ form.email.label }} <span class="text-danger">*</span></label>
+                    {{ form.email }}
+                    {% for error in form.email.errors %}<div class="text-danger small">{{ error }}</div>{% endfor %}
+                </div>
+                <div class="col-md-6 col-lg-4">
+                    <label class="form-label">{{ form.phone.label }} <span class="text-danger">*</span></label>
+                    {{ form.phone }}
+                    {% for error in form.phone.errors %}<div class="text-danger small">{{ error }}</div>{% endfor %}
+                </div>
+                <div class="col-12">
+                    <label class="form-label">{{ form.notes.label }}</label>
+                    {{ form.notes }}
+                    {% if form.notes.help_text %}<div class="form-text">{{ form.notes.help_text }}</div>{% endif %}
+                    {% for error in form.notes.errors %}<div class="text-danger small">{{ error }}</div>{% endfor %}
+                </div>
             </div>
             {% if form.non_field_errors %}
                 <div class="alert alert-danger mt-3">

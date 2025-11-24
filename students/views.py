@@ -13,7 +13,8 @@ from .services import (
     count_status,
     export_students_csv,
     export_students_excel,
-    fetch_external_data,
+    fetch_education_indicators,
+    generate_career_stats,
     generate_group_stats,
 )
 
@@ -24,7 +25,12 @@ def dashboard(request: HttpRequest) -> HttpResponse:
     status_counts = count_status(students)
     groups_count = students.values('group').distinct().count()
     stats_by_group = generate_group_stats(students)
+    career_stats = generate_career_stats(students)
     charts = build_chart_data(stats_by_group, status_counts)
+    charts['career'] = {
+        'labels': [row['carrera'] for row in career_stats],
+        'values': [row['total'] for row in career_stats],
+    }
 
     context = {
         'students_total': students.count(),
@@ -32,6 +38,7 @@ def dashboard(request: HttpRequest) -> HttpResponse:
         'groups_count': groups_count,
         'stats_by_group': stats_by_group,
         'charts': charts,
+        'career_stats': career_stats,
     }
     return render(request, 'students/dashboard.html', context)
 
@@ -108,15 +115,17 @@ def student_delete(request: HttpRequest, pk: int) -> HttpResponse:
     return render(request, 'students/student_confirm_delete.html', {'student': student})
 
 
-def external_api_view(request: HttpRequest) -> HttpResponse:
-    """Muestra datos obtenidos de una API externa usando requests."""
-    records: list[dict] | None = None
+def education_indicators_view(request: HttpRequest) -> HttpResponse:
+    """Muestra indicadores educativos de UNESCO UIS usando requests."""
+    data: dict | None = None
     error: str | None = None
+    country = request.GET.get('country') or None
+    indicator = request.GET.get('indicator') or None
     try:
-        records = fetch_external_data(limit=12)
+        data = fetch_education_indicators(country_code=country, indicator_code=indicator, limit=10)
     except Exception as exc:  # pragma: no cover - manejo de conectividad
-        error = f"No fue posible obtener la información externa: {exc}"
-    return render(request, 'students/external_api.html', {'records': records, 'error': error})
+        error = f"No fue posible obtener indicadores educativos: {exc}"
+    return render(request, 'students/external_api.html', {'data': data, 'error': error})
 
 
 def export_students_csv_view(request: HttpRequest) -> HttpResponse:

@@ -21,8 +21,8 @@
                 <div class="d-flex align-items-center">
                     <div class="icon-circle bg-success text-white me-3"><i class="bi bi-check-circle"></i></div>
                     <div>
-                        <p class="text-muted mb-0">Activos</p>
-                        <h4 class="mb-0 fw-bold">{{ status_counts.activo }}</h4>
+                        <p class="text-muted mb-0">Inscritos</p>
+                        <h4 class="mb-0 fw-bold">{{ status_counts.inscrito }}</h4>
                     </div>
                 </div>
             </div>
@@ -32,10 +32,36 @@
         <div class="card shadow-sm border-0 h-100">
             <div class="card-body">
                 <div class="d-flex align-items-center">
-                    <div class="icon-circle bg-secondary text-white me-3"><i class="bi bi-pause-circle"></i></div>
+                    <div class="icon-circle bg-warning text-white me-3"><i class="bi bi-exclamation-circle"></i></div>
                     <div>
-                        <p class="text-muted mb-0">Inactivos</p>
-                        <h4 class="mb-0 fw-bold">{{ status_counts.inactivo }}</h4>
+                        <p class="text-muted mb-0">Baja temporal</p>
+                        <h4 class="mb-0 fw-bold">{{ status_counts.baja_temporal }}</h4>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card shadow-sm border-0 h-100">
+            <div class="card-body">
+                <div class="d-flex align-items-center">
+                    <div class="icon-circle bg-danger text-white me-3"><i class="bi bi-dash-circle"></i></div>
+                    <div>
+                        <p class="text-muted mb-0">Baja definitiva</p>
+                        <h4 class="mb-0 fw-bold">{{ status_counts.baja_definitiva }}</h4>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card shadow-sm border-0 h-100">
+            <div class="card-body">
+                <div class="d-flex align-items-center">
+                    <div class="icon-circle bg-info text-white me-3"><i class="bi bi-mortarboard"></i></div>
+                    <div>
+                        <p class="text-muted mb-0">Egresados</p>
+                        <h4 class="mb-0 fw-bold">{{ status_counts.egresado }}</h4>
                     </div>
                 </div>
             </div>
@@ -61,7 +87,7 @@
         <div class="card shadow-sm border-0 h-100">
             <div class="card-header bg-white d-flex justify-content-between align-items-center">
                 <div>
-                    <h5 class="mb-0">Estadísticas por grupo</h5>
+                    <h5 class="mb-0">Estadísticas por grupo y carrera</h5>
                     <small class="text-muted">Generadas con pandas</small>
                 </div>
                 <a class="btn btn-sm btn-outline-primary" href="{% url 'students:student_list' %}"><i class="bi bi-table"></i> Ver tabla completa</a>
@@ -73,6 +99,7 @@
                             <thead class="table-light">
                                 <tr>
                                     <th>Grupo</th>
+                                    <th>Carrera</th>
                                     <th>Total de estudiantes</th>
                                 </tr>
                             </thead>
@@ -80,12 +107,38 @@
                                 {% for row in stats_by_group %}
                                 <tr>
                                     <td class="fw-semibold">{{ row.grupo }}</td>
+                                    <td>{{ row.carrera }}</td>
                                     <td>{{ row.total }}</td>
                                 </tr>
                                 {% endfor %}
                             </tbody>
                         </table>
                     </div>
+                    {% if career_stats %}
+                    <div class="row mt-3 g-3">
+                        <div class="col-lg-8">
+                            <h6 class="mb-2">Resumen por carrera</h6>
+                            <div class="table-responsive">
+                                <table class="table table-sm align-middle mb-0">
+                                    <thead class="table-light">
+                                        <tr>
+                                            <th>Carrera</th>
+                                            <th class="text-end">Total</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for row in career_stats %}
+                                        <tr>
+                                            <td>{{ row.carrera }}</td>
+                                            <td class="text-end">{{ row.total }}</td>
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
                 {% else %}
                     <p class="text-muted mb-0">Aún no hay estudiantes registrados.</p>
                 {% endif %}
@@ -95,11 +148,11 @@
     <div class="col-lg-4">
         <div class="card shadow-sm border-0 h-100">
             <div class="card-header bg-white">
-                <h5 class="mb-0">API externa</h5>
+                <h5 class="mb-0">Indicadores educativos</h5>
             </div>
             <div class="card-body">
-                <p class="text-muted">Consulta información en vivo de la API seleccionada.</p>
-                <a class="btn btn-primary w-100" href="{% url 'students:external_api' %}"><i class="bi bi-cloud-arrow-down"></i> Ver datos externos</a>
+                <p class="text-muted">Consulta datos educativos globales de UNESCO UIS.</p>
+                <a class="btn btn-primary w-100" href="{% url 'students:education_indicators' %}"><i class="bi bi-bar-chart"></i> Ver indicadores</a>
                 <div class="mt-4">
                     <h6 class="text-muted text-uppercase">Acciones rápidas</h6>
                     <div class="d-grid gap-2">
@@ -112,7 +165,7 @@
     </div>
 </div>
 <div class="row g-4 mt-2">
-    <div class="col-lg-6">
+    <div class="col-lg-4">
         <div class="card shadow-sm border-0 h-100">
             <div class="card-header bg-white d-flex align-items-center justify-content-between">
                 <div>
@@ -120,21 +173,34 @@
                     <small class="text-muted">Visualización con Chart.js</small>
                 </div>
             </div>
-            <div class="card-body">
-                <canvas id="groupChart" height="160"></canvas>
+            <div class="card-body chart-wrapper">
+                <canvas id="groupChart" class="w-100 h-100"></canvas>
             </div>
         </div>
     </div>
-    <div class="col-lg-6">
+    <div class="col-lg-4">
         <div class="card shadow-sm border-0 h-100">
             <div class="card-header bg-white d-flex align-items-center justify-content-between">
                 <div>
-                    <h6 class="mb-0">Estado de estudiantes</h6>
-                    <small class="text-muted">Activos vs inactivos</small>
+                    <h6 class="mb-0">Estados académicos</h6>
+                    <small class="text-muted">Distribución por situación actual</small>
                 </div>
             </div>
-            <div class="card-body">
-                <canvas id="statusChart" height="160"></canvas>
+            <div class="card-body chart-wrapper">
+                <canvas id="statusChart" class="w-100 h-100"></canvas>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-4">
+        <div class="card shadow-sm border-0 h-100">
+            <div class="card-header bg-white d-flex align-items-center justify-content-between">
+                <div>
+                    <h6 class="mb-0">Carreras con más estudiantes</h6>
+                    <small class="text-muted">Conteo por especialidad</small>
+                </div>
+            </div>
+            <div class="card-body chart-wrapper">
+                <canvas id="careerChart" class="w-100 h-100"></canvas>
             </div>
         </div>
     </div>
@@ -164,6 +230,7 @@
                 },
                 options: {
                     plugins: { legend: { display: false } },
+                    maintainAspectRatio: false,
                     scales: { y: { beginAtZero: true, ticks: { precision: 0 } } },
                 },
             });
@@ -177,12 +244,33 @@
                     labels: charts.status.labels,
                     datasets: [{
                         data: charts.status.values,
-                        backgroundColor: ['#198754', '#6c757d'],
+                        backgroundColor: ['#198754', '#ffc107', '#dc3545', '#0dcaf0'],
                         borderWidth: 1,
                     }],
                 },
                 options: {
                     plugins: { legend: { position: 'bottom' } },
+                    maintainAspectRatio: false,
+                },
+            });
+        }
+
+        const careerCtx = document.getElementById('careerChart');
+        if (careerCtx) {
+            new Chart(careerCtx, {
+                type: 'bar',
+                data: {
+                    labels: charts.career.labels,
+                    datasets: [{
+                        label: 'Estudiantes',
+                        data: charts.career.values,
+                        backgroundColor: palette.slice(0, charts.career.labels.length),
+                    }],
+                },
+                options: {
+                    plugins: { legend: { display: false } },
+                    maintainAspectRatio: false,
+                    scales: { y: { beginAtZero: true, ticks: { precision: 0 } } },
                 },
             });
         }

@@ -21,15 +21,17 @@ requirements.txt         # Dependencias de Python
 ```
 
 ## Modelo Student
-Campos principales: `first_name`, `last_name`, `matricula` (única), `email`, `phone`, `group`, `status` (activo/inactivo), `notes`, `created_at`.
+Campos principales: `first_name`, `last_name`, `career` (Carrera/Especialidad con choices), `matricula` (única), `email`, `phone`, `group`, `status` (Inscrito, Baja temporal, Baja definitiva, Egresado), `notes`, `created_at`.
+- Choices de carrera incluidos: Ingeniería en Software, Sistemas Computacionales, Ciencia de Datos, Ciberseguridad, Redes y Telecomunicaciones.
+- El estado usa exactamente cuatro opciones: Inscrito, Baja temporal, Baja definitiva, Egresado.
 
 ## Vistas clave
-- **Dashboard**: métricas de estudiantes, activos/inactivos, grupos, tabla generada con `pandas` por grupo y gráficas dinámicas (barra/donut) renderizadas con Chart.js.
+- **Dashboard**: métricas de estudiantes por estado (inscritos, bajas, egresados), conteo de grupos, tabla generada con `pandas` por grupo y carrera, gráficas dinámicas de grupo, estados y distribución por carrera con Chart.js.
 - **Listado**: filtros por nombre/matrícula, grupo y estado; acciones de detalle, edición y eliminación; botones para exportar CSV o Excel.
 - **Crear/Editar**: formularios con validaciones y mensajes de éxito/error.
 - **Detalle**: visualización de la ficha del estudiante.
 - **Eliminar**: confirmación de borrado.
-- **API externa**: consumo de `https://restcountries.com` usando `requests`, configurable por variables de entorno.
+- **Indicadores educativos**: consumo de la API de **UNESCO UIS** usando `requests`, configurable por variables de entorno. Permite filtrar por código de país y código de indicador y muestra tabla + gráfica.
 
 ## Variables de entorno
 Se cargan con `python-dotenv` desde `.env` (opcional):
@@ -37,8 +39,9 @@ Se cargan con `python-dotenv` desde `.env` (opcional):
 DJANGO_SECRET_KEY=clave-segura
 DJANGO_DEBUG=True
 DJANGO_ALLOWED_HOSTS=localhost,127.0.0.1
-EXTERNAL_API_URL=https://restcountries.com/v3.1/all
-EXTERNAL_API_FIELDS=name,capital,region,population
+UNESCO_API_URL=https://api.uis.unesco.org/sdmx/cube
+UNESCO_DEFAULT_INDICATOR=SE.TER.ENRR
+UNESCO_DEFAULT_AREA=MEX;USA;ARG
 ```
 
 ## Instalación y ejecución
@@ -71,7 +74,7 @@ Se usan las pruebas integradas de Django (`unittest`). Ejecutar:
 ```bash
 python manage.py test
 ```
-Las pruebas cubren modelo, formularios, vistas (GET/POST), filtros, exportaciones CSV/Excel, servicios con `pandas`, datos para gráficas y una prueba mockeada de la API externa.
+Las pruebas cubren modelo, formularios (incluyendo validaciones reforzadas y nuevo campo de carrera), vistas (GET/POST), filtros, exportaciones CSV/Excel, servicios con `pandas` (estadísticas por grupo y carrera), datos para gráficas y una prueba mockeada de la API de indicadores UNESCO.
 
 ## Perfilado y rendimiento
 - **cProfile**:
@@ -88,8 +91,8 @@ Las pruebas cubren modelo, formularios, vistas (GET/POST), filtros, exportacione
 ## Notas sobre el diseño
 - Se respetó la estructura visual del diseño original adaptándola a **Bootstrap 5**, eliminando dependencias de frameworks JS pesados.
 - Los estilos adicionales están en `static/css/styles.css` para mantener tarjetas redondeadas e iconos circulares.
-- Las gráficas del dashboard se renderizan con Chart.js (CDN) usando datos generados por `pandas`.
-- La exportación de estudiantes a CSV/Excel está disponible desde el listado mediante el botón "Exportar".
+- Las gráficas del dashboard se renderizan con Chart.js (CDN) usando datos generados por `pandas`, incluyendo la nueva distribución por carrera y los cuatro estados académicos.
+- La exportación de estudiantes a CSV/Excel está disponible desde el listado mediante el botón "Exportar" e incluye el campo de carrera.
 
 ## Ejecución en Windows + VS Code (paso a paso)
 1. Instalar **Python 3** y **pip** desde [python.org](https://python.org).

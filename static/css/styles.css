@@ -21,3 +21,20 @@ body > .container {
 footer {
     flex-shrink: 0;
 }
+.nav-link {
+    transition: all 0.2s ease-in-out;
+}
+
+.nav-link:hover {
+    background: rgba(255, 255, 255, 0.15);
+    border-radius: 8px;
+}
+
+.nav-link-active {
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 10px;
+}
+
+.chart-wrapper {
+    max-height: 280px;
+}

@@ -13,5 +13,5 @@ urlpatterns = [
     path('estudiantes/<int:pk>/eliminar/', views.student_delete, name='student_delete'),
     path('estudiantes/exportar/csv/', views.export_students_csv_view, name='export_csv'),
     path('estudiantes/exportar/excel/', views.export_students_excel_view, name='export_excel'),
-    path('api-externa/', views.external_api_view, name='external_api'),
+    path('indicadores-educativos/', views.education_indicators_view, name='education_indicators'),
 ]

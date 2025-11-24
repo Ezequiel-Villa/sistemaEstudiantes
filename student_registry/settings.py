@@ -93,6 +93,7 @@ STATIC_ROOT = BASE_DIR / 'staticfiles'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-# Configuración de API externa
-EXTERNAL_API_URL = os.getenv('EXTERNAL_API_URL', 'https://restcountries.com/v3.1/all')
-EXTERNAL_API_FIELDS = os.getenv('EXTERNAL_API_FIELDS', 'name,capital,region,population')
+# Configuración de API UNESCO UIS
+UNESCO_API_URL = os.getenv('UNESCO_API_URL', 'https://api.uis.unesco.org/sdmx/cube')
+UNESCO_DEFAULT_INDICATOR = os.getenv('UNESCO_DEFAULT_INDICATOR', 'SE.TER.ENRR')
+UNESCO_DEFAULT_AREA = os.getenv('UNESCO_DEFAULT_AREA', 'MEX;USA;ARG')

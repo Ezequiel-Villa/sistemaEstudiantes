@@ -10,42 +10,78 @@ from .models import Student
 
 
 def generate_group_stats(students: Iterable[Student]) -> list[dict]:
-    """Genera estadísticas de estudiantes por grupo utilizando pandas."""
+    """Genera estadísticas por grupo y carrera utilizando pandas."""
     if not students:
         return []
-    data = [{'grupo': s.group, 'estado': s.status} for s in students]
+    data = [{'grupo': s.group, 'estado': s.status, 'carrera': s.career} for s in students]
     df = pd.DataFrame(data)
-    grouped = df.groupby('grupo').size().reset_index(name='total')
+    grouped = df.groupby(['grupo', 'carrera']).size().reset_index(name='total')
+    return grouped.to_dict(orient='records')
+
+
+def generate_career_stats(students: Iterable[Student]) -> list[dict]:
+    """Devuelve el conteo de estudiantes por carrera."""
+    if not students:
+        return []
+    df = pd.DataFrame([{'carrera': s.career} for s in students])
+    grouped = df['carrera'].value_counts().reset_index()
+    grouped.columns = ['carrera', 'total']
     return grouped.to_dict(orient='records')
 
 
 def count_status(students: Iterable[Student]) -> dict:
-    """Cuenta estudiantes activos e inactivos para métricas de dashboard."""
+    """Cuenta estudiantes por estado académico."""
+    template = {
+        'inscrito': 0,
+        'baja_temporal': 0,
+        'baja_definitiva': 0,
+        'egresado': 0,
+    }
     if not students:
-        return {'activo': 0, 'inactivo': 0}
+        return template
     df = pd.DataFrame([{'estado': s.status} for s in students])
     counts = df['estado'].value_counts().to_dict()
-    return {'activo': counts.get('activo', 0), 'inactivo': counts.get('inactivo', 0)}
+    template.update(counts)
+    return template
 
 
-def fetch_external_data(limit: int = 10) -> list[dict]:
-    """Consume la API externa definida en settings y devuelve una lista de registros."""
-    url = settings.EXTERNAL_API_URL
-    params = {}
-    if settings.EXTERNAL_API_FIELDS:
-        params['fields'] = settings.EXTERNAL_API_FIELDS
-    response = requests.get(url, params=params, timeout=10)
+def fetch_education_indicators(country_code: str | None = None, indicator_code: str | None = None, limit: int = 12) -> dict:
+    """Consume la API de indicadores educativos de UNESCO UIS.
+
+    Devuelve un diccionario con los registros en tabla y datos resumidos
+    listos para graficar (labels/values).
+    """
+    url = settings.UNESCO_API_URL
+    params = {
+        'format': 'json',
+        'time': 'latest',
+        'indicator': indicator_code or settings.UNESCO_DEFAULT_INDICATOR,
+        'ref_area': country_code or settings.UNESCO_DEFAULT_AREA,
+    }
+    response = requests.get(url, params=params, timeout=12)
     response.raise_for_status()
     payload = response.json()
-    countries = []
-    for entry in payload[:limit]:
-        countries.append({
-            'nombre': entry.get('name', {}).get('common') if isinstance(entry.get('name'), dict) else entry.get('name'),
-            'capital': ', '.join(entry.get('capital', [])) if isinstance(entry.get('capital'), list) else entry.get('capital'),
-            'region': entry.get('region'),
-            'poblacion': entry.get('population'),
+    raw_records = payload.get('data', payload)
+    if isinstance(raw_records, dict):
+        raw_records = raw_records.get('data', [])
+    records: list[dict] = []
+    for entry in raw_records[:limit]:
+        valor = entry.get('OBS_VALUE') or entry.get('value')
+        try:
+            valor_num = float(valor)
+        except (TypeError, ValueError):
+            valor_num = 0
+        records.append({
+            'pais': entry.get('REF_AREA') or entry.get('ref_area') or entry.get('country'),
+            'anio': entry.get('TIME_PERIOD') or entry.get('time'),
+            'indicador': entry.get('INDICATOR') or params['indicator'],
+            'valor': valor_num,
+            'unidad': entry.get('UNIT_MULT') or entry.get('unit'),
         })
-    return countries
+
+    labels = [f"{row.get('pais', 'N/D')} ({row.get('anio', 's/f')})" for row in records]
+    values = [row.get('valor', 0) for row in records]
+    return {'records': records, 'chart': {'labels': labels, 'values': values}}
 
 
 def dataframe_from_students(students: Iterable[Student]) -> pd.DataFrame:
@@ -54,11 +90,12 @@ def dataframe_from_students(students: Iterable[Student]) -> pd.DataFrame:
         {
             'Nombre': s.first_name,
             'Apellidos': s.last_name,
+            'Carrera': s.career,
             'Matrícula': s.matricula,
             'Email': s.email,
             'Teléfono': s.phone,
             'Grupo': s.group,
-            'Estado': s.status,
+            'Estado': dict(Student.STATUS_CHOICES).get(s.status, s.status),
             'Notas': s.notes,
             # Excel no admite zona horaria; convertimos a naive preservando hora local
             'Registrado': timezone.make_naive(s.created_at) if timezone.is_aware(s.created_at) else s.created_at,
@@ -86,10 +123,15 @@ def export_students_excel(students: Iterable[Student]) -> BytesIO:
 
 def build_chart_data(stats_by_group: list[dict], status_counts: dict) -> dict:
     """Crea diccionarios con datos listos para graficar en Chart.js."""
-    group_labels = [row['grupo'] for row in stats_by_group]
+    group_labels = [f"{row['grupo']} · {row['carrera']}" for row in stats_by_group]
     group_values = [row['total'] for row in stats_by_group]
-    status_labels = ['Activo', 'Inactivo']
-    status_values = [status_counts.get('activo', 0), status_counts.get('inactivo', 0)]
+    status_labels = ['Inscrito', 'Baja temporal', 'Baja definitiva', 'Egresado']
+    status_values = [
+        status_counts.get('inscrito', 0),
+        status_counts.get('baja_temporal', 0),
+        status_counts.get('baja_definitiva', 0),
+        status_counts.get('egresado', 0),
+    ]
     return {
         'group': {'labels': group_labels, 'values': group_values},
         'status': {'labels': status_labels, 'values': status_values},

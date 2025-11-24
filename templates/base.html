@@ -19,9 +19,11 @@
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto">
-                    <li class="nav-item"><a class="nav-link" href="{% url 'students:dashboard' %}"><i class="bi bi-speedometer2 me-1"></i>Dashboard</a></li>
-                    <li class="nav-item"><a class="nav-link" href="{% url 'students:student_list' %}"><i class="bi bi-people me-1"></i>Estudiantes</a></li>
-                    <li class="nav-item"><a class="nav-link" href="{% url 'students:external_api' %}"><i class="bi bi-cloud-arrow-down me-1"></i>API externa</a></li>
+                    {% with current=request.resolver_match.url_name student_urls='student_list student_create student_update student_detail student_delete' %}
+                    <li class="nav-item"><a class="nav-link {% if current == 'dashboard' %}active fw-semibold nav-link-active{% endif %}" href="{% url 'students:dashboard' %}"><i class="bi bi-speedometer2 me-1"></i>Dashboard</a></li>
+                    <li class="nav-item"><a class="nav-link {% if current in student_urls %}active fw-semibold nav-link-active{% endif %}" href="{% url 'students:student_list' %}"><i class="bi bi-people me-1"></i>Estudiantes</a></li>
+                    <li class="nav-item"><a class="nav-link {% if current == 'education_indicators' %}active fw-semibold nav-link-active{% endif %}" href="{% url 'students:education_indicators' %}"><i class="bi bi-bar-chart-line me-1"></i>Indicadores educativos</a></li>
+                    {% endwith %}
                 </ul>
             </div>
         </div>
