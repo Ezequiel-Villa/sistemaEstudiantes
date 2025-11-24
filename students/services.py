@@ -45,22 +45,31 @@ def count_status(students: Iterable[Student]) -> dict:
     return template
 
 
-def fetch_education_indicators(country_code: str | None = None, indicator_code: str | None = None, limit: int = 12) -> dict:
+def fetch_education_indicators(
+    country_code: str | None = None,
+    indicator_code: str | None = None,
+    limit: int = 12,
+) -> dict:
     """Consume la API de indicadores educativos de UNESCO UIS.
 
-    Devuelve un diccionario con los registros en tabla y datos resumidos
-    listos para graficar (labels/values).
+    Si la API no responde (por ejemplo, 404 u otra condición de red),
+    devolvemos datos de muestra para mantener la interfaz operativa
+    y mostrar un mensaje informativo.
     """
-    url = settings.UNESCO_API_URL
+    url = settings.UNESCO_API_URL.rstrip('/')
     params = {
         'format': 'json',
         'time': 'latest',
         'indicator': indicator_code or settings.UNESCO_DEFAULT_INDICATOR,
         'ref_area': country_code or settings.UNESCO_DEFAULT_AREA,
     }
-    response = requests.get(url, params=params, timeout=12)
-    response.raise_for_status()
-    payload = response.json()
+    try:
+        response = requests.get(url, params=params, timeout=12)
+        response.raise_for_status()
+        payload = response.json()
+    except Exception as exc:  # pragma: no cover - dependiente de la red
+        return _fallback_indicator_data(params, warning=str(exc))
+
     raw_records = payload.get('data', payload)
     if isinstance(raw_records, dict):
         raw_records = raw_records.get('data', [])
@@ -82,6 +91,21 @@ def fetch_education_indicators(country_code: str | None = None, indicator_code: 
     labels = [f"{row.get('pais', 'N/D')} ({row.get('anio', 's/f')})" for row in records]
     values = [row.get('valor', 0) for row in records]
     return {'records': records, 'chart': {'labels': labels, 'values': values}}
+
+
+def _fallback_indicator_data(params: dict, warning: str | None = None) -> dict:
+    """Devuelve datos simulados cuando la API UNESCO no está disponible."""
+    records = [
+        {'pais': 'MEX', 'anio': '2022', 'indicador': params['indicator'], 'valor': 88.4, 'unidad': '%'},
+        {'pais': 'USA', 'anio': '2022', 'indicador': params['indicator'], 'valor': 91.2, 'unidad': '%'},
+        {'pais': 'ARG', 'anio': '2022', 'indicador': params['indicator'], 'valor': 86.5, 'unidad': '%'},
+    ]
+    labels = [f"{row['pais']} ({row['anio']})" for row in records]
+    values = [row['valor'] for row in records]
+    data = {'records': records, 'chart': {'labels': labels, 'values': values}}
+    if warning:
+        data['warning'] = warning
+    return data
 
 
 def dataframe_from_students(students: Iterable[Student]) -> pd.DataFrame:

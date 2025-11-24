@@ -119,13 +119,17 @@ def education_indicators_view(request: HttpRequest) -> HttpResponse:
     """Muestra indicadores educativos de UNESCO UIS usando requests."""
     data: dict | None = None
     error: str | None = None
+    warning: str | None = None
     country = request.GET.get('country') or None
     indicator = request.GET.get('indicator') or None
     try:
         data = fetch_education_indicators(country_code=country, indicator_code=indicator, limit=10)
     except Exception as exc:  # pragma: no cover - manejo de conectividad
         error = f"No fue posible obtener indicadores educativos: {exc}"
-    return render(request, 'students/external_api.html', {'data': data, 'error': error})
+    if data and data.get('warning'):
+        warning = f"Mostrando datos de ejemplo porque la API respondió con: {data['warning']}"
+    context = {'data': data, 'error': error, 'warning': warning}
+    return render(request, 'students/external_api.html', context)
 
 
 def export_students_csv_view(request: HttpRequest) -> HttpResponse:

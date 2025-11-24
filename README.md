@@ -31,7 +31,7 @@ Campos principales: `first_name`, `last_name`, `career` (Carrera/Especialidad co
 - **Crear/Editar**: formularios con validaciones y mensajes de éxito/error.
 - **Detalle**: visualización de la ficha del estudiante.
 - **Eliminar**: confirmación de borrado.
-- **Indicadores educativos**: consumo de la API de **UNESCO UIS** usando `requests`, configurable por variables de entorno. Permite filtrar por código de país y código de indicador y muestra tabla + gráfica.
+- **Indicadores educativos**: consumo de la API de **UNESCO UIS** usando `requests`, configurable por variables de entorno. Permite filtrar por código de país y código de indicador y muestra tabla + gráfica. Si la API no responde, se muestran datos de ejemplo para seguir visualizando indicadores.
 
 ## Variables de entorno
 Se cargan con `python-dotenv` desde `.env` (opcional):

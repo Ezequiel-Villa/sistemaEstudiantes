@@ -3,6 +3,10 @@ body {
     display: flex;
     flex-direction: column;
 }
+.brand-logo {
+    width: 34px;
+    height: 34px;
+}
 .icon-circle {
     width: 48px;
     height: 48px;
