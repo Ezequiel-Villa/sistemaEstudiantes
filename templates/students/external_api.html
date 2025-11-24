@@ -1,0 +1,85 @@
+{% extends 'base.html' %}
+{% block title %}Indicadores educativos{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <div>
+        <h2 class="mb-0">Indicadores educativos UNESCO</h2>
+        <small class="text-muted">Consulta realizada con la API UIS y la librería requests.</small>
+    </div>
+    <a class="btn btn-outline-secondary" href="{% url 'students:dashboard' %}"><i class="bi bi-arrow-left"></i> Dashboard</a>
+</div>
+<div class="card shadow-sm border-0">
+    <div class="card-body">
+        <form class="row g-2 align-items-end mb-3" method="get">
+            <div class="col-md-4">
+                <label class="form-label mb-1">Código de país (opcional)</label>
+                <input type="text" name="country" value="{{ request.GET.country }}" class="form-control" placeholder="Ej: MEX;USA">
+            </div>
+            <div class="col-md-5">
+                <label class="form-label mb-1">Indicador (opcional)</label>
+                <input type="text" name="indicator" value="{{ request.GET.indicator }}" class="form-control" placeholder="Ej: SE.TER.ENRR">
+                <small class="text-muted">Usa códigos UIS; si lo dejas en blanco se usa el indicador por defecto configurado.</small>
+            </div>
+            <div class="col-md-3">
+                <button class="btn btn-primary w-100" type="submit"><i class="bi bi-search"></i> Consultar</button>
+            </div>
+        </form>
+
+        {% if error %}
+            <div class="alert alert-danger">{{ error }}</div>
+        {% endif %}
+        {% if data and data.records %}
+            <div class="row g-3 mb-3">
+                {% for row in data.records %}
+                    <div class="col-md-6 col-lg-4">
+                        <div class="border rounded-3 p-3 h-100 bg-light">
+                            <h5 class="mb-1">{{ row.pais|default:'N/D' }}</h5>
+                            <p class="text-muted mb-1">Indicador: {{ row.indicador }}</p>
+                            <p class="text-muted mb-1">Año: {{ row.anio|default:'N/D' }}</p>
+                            <p class="fw-semibold mb-0">Valor: {{ row.valor|default:'N/D' }} {{ row.unidad }}</p>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+            <div class="card bg-white border-0 shadow-sm">
+                <div class="card-body">
+                    <h6 class="mb-2">Distribución de valores</h6>
+                    <canvas id="indicatorChart" height="160"></canvas>
+                </div>
+            </div>
+            {{ data.chart|json_script:"indicator-chart" }}
+        {% else %}
+            <p class="text-muted mb-0">No hay datos para mostrar.</p>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+{{ block.super }}
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
+<script>
+    (() => {
+        const element = document.getElementById('indicator-chart');
+        if (!element) return;
+        const data = JSON.parse(element.textContent);
+        const ctx = document.getElementById('indicatorChart');
+        if (!ctx) return;
+        new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: data.labels,
+                datasets: [{
+                    label: 'Valor reportado',
+                    data: data.values,
+                    backgroundColor: '#0d6efd',
+                }],
+            },
+            options: {
+                plugins: { legend: { display: false } },
+                scales: { y: { beginAtZero: true } },
+            },
+        });
+    })();
+</script>
+{% endblock %}
