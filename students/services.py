@@ -45,64 +45,86 @@ def count_status(students: Iterable[Student]) -> dict:
     return template
 
 
-def fetch_education_indicators(
-    country_code: str | None = None,
-    indicator_code: str | None = None,
-    limit: int = 12,
+def fetch_universities(
+    country: str | None = None,
+    name: str | None = None,
+    limit: int = 30,
 ) -> dict:
-    """Consume la API de indicadores educativos de UNESCO UIS.
+    """Consume la API Hipolabs para listar universidades.
 
-    Si la API no responde (por ejemplo, 404 u otra condición de red),
-    devolvemos datos de muestra para mantener la interfaz operativa
-    y mostrar un mensaje informativo.
+    Si la API no responde, devolvemos datos de ejemplo y anotamos
+    la advertencia para mostrarla en la interfaz.
     """
-    url = settings.UNESCO_API_URL.rstrip('/')
-    params = {
-        'format': 'json',
-        'time': 'latest',
-        'indicator': indicator_code or settings.UNESCO_DEFAULT_INDICATOR,
-        'ref_area': country_code or settings.UNESCO_DEFAULT_AREA,
-    }
+
+    base_url = settings.UNIVERSITIES_API_BASE_URL.rstrip('/')
+    params: dict[str, str] = {}
+    if country:
+        params['country'] = country
+    if name:
+        params['name'] = name
+
     try:
-        response = requests.get(url, params=params, timeout=12)
+        response = requests.get(f"{base_url}/search", params=params, timeout=12)
         response.raise_for_status()
         payload = response.json()
     except Exception as exc:  # pragma: no cover - dependiente de la red
-        return _fallback_indicator_data(params, warning=str(exc))
+        return _fallback_university_data(params, warning=str(exc))
 
-    raw_records = payload.get('data', payload)
-    if isinstance(raw_records, dict):
-        raw_records = raw_records.get('data', [])
     records: list[dict] = []
-    for entry in raw_records[:limit]:
-        valor = entry.get('OBS_VALUE') or entry.get('value')
-        try:
-            valor_num = float(valor)
-        except (TypeError, ValueError):
-            valor_num = 0
+    for entry in payload[:limit]:
+        web_pages = entry.get('web_pages') or []
+        domains = entry.get('domains') or []
         records.append({
-            'pais': entry.get('REF_AREA') or entry.get('ref_area') or entry.get('country'),
-            'anio': entry.get('TIME_PERIOD') or entry.get('time'),
-            'indicador': entry.get('INDICATOR') or params['indicator'],
-            'valor': valor_num,
-            'unidad': entry.get('UNIT_MULT') or entry.get('unit'),
+            'name': entry.get('name'),
+            'country': entry.get('country'),
+            'alpha_two_code': entry.get('alpha_two_code'),
+            'website': web_pages[0] if web_pages else None,
+            'domain': domains[0] if domains else None,
         })
 
-    labels = [f"{row.get('pais', 'N/D')} ({row.get('anio', 's/f')})" for row in records]
-    values = [row.get('valor', 0) for row in records]
-    return {'records': records, 'chart': {'labels': labels, 'values': values}}
+    chart = _build_university_chart(records)
+    return {'records': records, 'chart': chart}
 
 
-def _fallback_indicator_data(params: dict, warning: str | None = None) -> dict:
-    """Devuelve datos simulados cuando la API UNESCO no está disponible."""
+def _build_university_chart(records: list[dict]) -> dict:
+    """Genera datos listos para Chart.js con el conteo por país."""
+    if not records:
+        return {'labels': [], 'values': []}
+    df = pd.DataFrame(records)
+    counts = df['country'].value_counts().reset_index()
+    counts.columns = ['country', 'total']
+    return {
+        'labels': counts['country'].tolist(),
+        'values': counts['total'].tolist(),
+    }
+
+
+def _fallback_university_data(params: dict, warning: str | None = None) -> dict:
+    """Datos simulados cuando la API de Hipolabs no está disponible."""
     records = [
-        {'pais': 'MEX', 'anio': '2022', 'indicador': params['indicator'], 'valor': 88.4, 'unidad': '%'},
-        {'pais': 'USA', 'anio': '2022', 'indicador': params['indicator'], 'valor': 91.2, 'unidad': '%'},
-        {'pais': 'ARG', 'anio': '2022', 'indicador': params['indicator'], 'valor': 86.5, 'unidad': '%'},
+        {
+            'name': 'National Autonomous University of Mexico',
+            'country': 'Mexico',
+            'alpha_two_code': 'MX',
+            'website': 'http://www.unam.mx/',
+            'domain': 'unam.mx',
+        },
+        {
+            'name': 'Massachusetts Institute of Technology',
+            'country': 'United States',
+            'alpha_two_code': 'US',
+            'website': 'http://web.mit.edu/',
+            'domain': 'mit.edu',
+        },
+        {
+            'name': 'University of Toronto',
+            'country': 'Canada',
+            'alpha_two_code': 'CA',
+            'website': 'http://www.utoronto.ca/',
+            'domain': 'utoronto.ca',
+        },
     ]
-    labels = [f"{row['pais']} ({row['anio']})" for row in records]
-    values = [row['valor'] for row in records]
-    data = {'records': records, 'chart': {'labels': labels, 'values': values}}
+    data = {'records': records, 'chart': _build_university_chart(records)}
     if warning:
         data['warning'] = warning
     return data

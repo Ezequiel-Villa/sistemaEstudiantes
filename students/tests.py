@@ -242,13 +242,17 @@ class ServicesTests(TestCase):
         self.assertIn('B', labels)
         self.assertEqual(counts['inscrito'], 2)
 
-    @patch('students.views.fetch_education_indicators')
+    @patch('students.views.fetch_universities')
     def test_external_api_view(self, mock_fetch):
         mock_fetch.return_value = {
-            'records': [{'pais': 'México', 'anio': '2022', 'indicador': 'SE.TER.ENRR', 'valor': 88.1, 'unidad': '%'}],
-            'chart': {'labels': ['México (2022)'], 'values': [88.1]},
+            'records': [
+                {'name': 'Test University', 'country': 'Mexico', 'alpha_two_code': 'MX', 'website': 'http://test.mx'},
+                {'name': 'Demo University', 'country': 'Canada', 'alpha_two_code': 'CA', 'website': 'http://demo.ca'},
+            ],
+            'chart': {'labels': ['Mexico', 'Canada'], 'values': [1, 1]},
         }
-        response = self.client.get(reverse('students:education_indicators'))
+        response = self.client.get(reverse('students:universities'))
         self.assertEqual(response.status_code, 200)
-        self.assertContains(response, 'México')
+        self.assertContains(response, 'Test University')
+        self.assertContains(response, 'Canada')
         mock_fetch.assert_called_once()

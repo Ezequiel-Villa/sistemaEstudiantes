@@ -13,7 +13,7 @@ from .services import (
     count_status,
     export_students_csv,
     export_students_excel,
-    fetch_education_indicators,
+    fetch_universities,
     generate_career_stats,
     generate_group_stats,
 )
@@ -115,20 +115,20 @@ def student_delete(request: HttpRequest, pk: int) -> HttpResponse:
     return render(request, 'students/student_confirm_delete.html', {'student': student})
 
 
-def education_indicators_view(request: HttpRequest) -> HttpResponse:
-    """Muestra indicadores educativos de UNESCO UIS usando requests."""
+def universities_view(request: HttpRequest) -> HttpResponse:
+    """Muestra universidades consultadas desde la API Hipolabs."""
     data: dict | None = None
     error: str | None = None
     warning: str | None = None
     country = request.GET.get('country') or None
-    indicator = request.GET.get('indicator') or None
+    name = request.GET.get('name') or None
     try:
-        data = fetch_education_indicators(country_code=country, indicator_code=indicator, limit=10)
+        data = fetch_universities(country=country, name=name, limit=30)
     except Exception as exc:  # pragma: no cover - manejo de conectividad
-        error = f"No fue posible obtener indicadores educativos: {exc}"
+        error = f"No fue posible obtener universidades: {exc}"
     if data and data.get('warning'):
         warning = f"Mostrando datos de ejemplo porque la API respondió con: {data['warning']}"
-    context = {'data': data, 'error': error, 'warning': warning}
+    context = {'data': data, 'error': error, 'warning': warning, 'filters': {'country': country or '', 'name': name or ''}}
     return render(request, 'students/external_api.html', context)
 
 

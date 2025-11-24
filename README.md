@@ -31,7 +31,7 @@ Campos principales: `first_name`, `last_name`, `career` (Carrera/Especialidad co
 - **Crear/Editar**: formularios con validaciones y mensajes de éxito/error.
 - **Detalle**: visualización de la ficha del estudiante.
 - **Eliminar**: confirmación de borrado.
-- **Indicadores educativos**: consumo de la API de **UNESCO UIS** usando `requests`, configurable por variables de entorno. Permite filtrar por código de país y código de indicador y muestra tabla + gráfica. Si la API no responde, se muestran datos de ejemplo para seguir visualizando indicadores.
+- **Universidades**: explorador con la **Hipolabs Universities API** usando `requests`, configurable por variables de entorno. Permite filtrar por país y nombre de universidad, muestra tarjetas con enlace al sitio web y una gráfica de universidades por país. Si la API no responde, se muestran datos de ejemplo para mantener la experiencia.
 
 ## Variables de entorno
 Se cargan con `python-dotenv` desde `.env` (opcional):
@@ -39,10 +39,14 @@ Se cargan con `python-dotenv` desde `.env` (opcional):
 DJANGO_SECRET_KEY=clave-segura
 DJANGO_DEBUG=True
 DJANGO_ALLOWED_HOSTS=localhost,127.0.0.1
-UNESCO_API_URL=https://api.uis.unesco.org/sdmx/cube
-UNESCO_DEFAULT_INDICATOR=SE.TER.ENRR
-UNESCO_DEFAULT_AREA=MEX;USA;ARG
+UNIVERSITIES_API_BASE_URL=https://universities.hipolabs.com
 ```
+
+### Explorador de universidades (Hipolabs)
+- La página "Universidades" consulta la API pública de Hipolabs (`/search`).
+- Filtros disponibles en el formulario: `country` (texto libre, por ejemplo `Mexico`, `Canada`) y `name` (por ejemplo `technology`, `national`).
+- Resultados: nombre, país, código de país, enlace al sitio web (primer `web_pages`).
+- Estadísticas: conteo de universidades por país para la búsqueda actual (pandas) y gráfica de barras con Chart.js.
 
 ## Instalación y ejecución
 1. **Crear entorno virtual**
@@ -74,7 +78,7 @@ Se usan las pruebas integradas de Django (`unittest`). Ejecutar:
 ```bash
 python manage.py test
 ```
-Las pruebas cubren modelo, formularios (incluyendo validaciones reforzadas y nuevo campo de carrera), vistas (GET/POST), filtros, exportaciones CSV/Excel, servicios con `pandas` (estadísticas por grupo y carrera), datos para gráficas y una prueba mockeada de la API de indicadores UNESCO.
+Las pruebas cubren modelo, formularios (incluyendo validaciones reforzadas y nuevo campo de carrera), vistas (GET/POST), filtros, exportaciones CSV/Excel, servicios con `pandas` (estadísticas por grupo y carrera), datos para gráficas y una prueba mockeada de la API de universidades Hipolabs.
 
 ## Perfilado y rendimiento
 - **cProfile**:
