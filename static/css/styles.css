@@ -33,7 +33,6 @@ body {
 
 .app-container {
     width: 100%;
-    max-width: var(--layout-max-width);
     margin: 0 auto;
     padding: 1.5rem var(--layout-padding) 2rem;
 }
