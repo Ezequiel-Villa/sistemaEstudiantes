@@ -65,7 +65,9 @@ def forwards(apps, schema_editor):
         cursor.execute("SELECT id FROM students_career ORDER BY id LIMIT 1;")
         row = cursor.fetchone()
         if row:
-            cursor.execute("UPDATE students_student SET carrera_id = ? WHERE carrera_id IS NULL;", (row[0],))
+            cursor.execute(
+                f"UPDATE students_student SET carrera_id = {int(row[0])} WHERE carrera_id IS NULL;"
+            )
 
     # Populate new columns from legacy fields when possible.
     cursor.execute(f"PRAGMA table_info({table});")
