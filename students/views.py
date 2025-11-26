@@ -23,7 +23,7 @@ def dashboard(request: HttpRequest) -> HttpResponse:
     """Pantalla principal con métricas y estadísticas rápidas."""
     students = Student.objects.all()
     status_counts = count_status(students)
-    groups_count = students.values('group').distinct().count()
+    groups_count = students.values('grupo').distinct().count()
     stats_by_group = generate_group_stats(students)
     career_stats = generate_career_stats(students)
     charts = build_chart_data(stats_by_group, status_counts)
@@ -49,19 +49,21 @@ def student_list(request: HttpRequest) -> HttpResponse:
     group_filter = request.GET.get('group', '').strip()
     status_filter = request.GET.get('status', '').strip()
 
-    students = Student.objects.all()
+    students = Student.objects.select_related('carrera').all()
     if query:
         students = students.filter(
-            Q(first_name__icontains=query)
-            | Q(last_name__icontains=query)
+            Q(nombre__icontains=query)
+            | Q(apellido_paterno__icontains=query)
+            | Q(apellido_materno__icontains=query)
             | Q(matricula__icontains=query)
+            | Q(correo__icontains=query)
         )
     if group_filter:
-        students = students.filter(group__iexact=group_filter)
+        students = students.filter(grupo__iexact=group_filter)
     if status_filter:
-        students = students.filter(status=status_filter)
+        students = students.filter(estado=status_filter)
 
-    groups = Student.objects.values_list('group', flat=True).distinct()
+    groups = Student.objects.values_list('grupo', flat=True).distinct()
 
     return render(
         request,
