@@ -1,207 +1,162 @@
 {% extends 'base.html' %}
 {% block title %}Dashboard · Sistema de Estudiantes{% endblock %}
 {% block content %}
-<div class="row g-3 mb-4">
-    <div class="col-md-3">
-        <div class="card shadow-sm border-0 h-100">
-            <div class="card-body">
-                <div class="d-flex align-items-center">
-                    <div class="icon-circle bg-primary text-white me-3"><i class="bi bi-people"></i></div>
-                    <div>
-                        <p class="text-muted mb-0">Total de estudiantes</p>
-                        <h4 class="mb-0 fw-bold">{{ students_total }}</h4>
-                    </div>
-                </div>
-            </div>
+<div class="page-header">
+    <div>
+        <h1 class="page-title">Dashboard Principal</h1>
+        <p class="page-subtitle">Resumen general del sistema de registro de estudiantes.</p>
+    </div>
+    <div class="actions-row">
+        <a class="button button-secondary" href="{% url 'students:student_list' %}"><svg class="icon" aria-hidden="true"><use href="#icon-table"></use></svg> Ver estudiantes</a>
+        <a class="button button-primary" href="{% url 'students:student_create' %}"><svg class="icon" aria-hidden="true"><use href="#icon-user-plus"></use></svg> Nuevo estudiante</a>
+    </div>
+</div>
+
+<div class="metrics-grid">
+    <div class="metric-tile">
+        <div class="icon-circle icon-primary"><svg class="icon" aria-hidden="true"><use href="#icon-users"></use></svg></div>
+        <div>
+            <p class="text-muted">Total de estudiantes</p>
+            <h3>{{ students_total }}</h3>
         </div>
     </div>
-    <div class="col-md-3">
-        <div class="card shadow-sm border-0 h-100">
-            <div class="card-body">
-                <div class="d-flex align-items-center">
-                    <div class="icon-circle bg-success text-white me-3"><i class="bi bi-check-circle"></i></div>
-                    <div>
-                        <p class="text-muted mb-0">Inscritos</p>
-                        <h4 class="mb-0 fw-bold">{{ status_counts.inscrito }}</h4>
-                    </div>
-                </div>
-            </div>
+    <div class="metric-tile">
+        <div class="icon-circle icon-success"><svg class="icon" aria-hidden="true"><use href="#icon-check-circle"></use></svg></div>
+        <div>
+            <p class="text-muted">Inscritos</p>
+            <h3>{{ status_counts.inscrito }}</h3>
         </div>
     </div>
-    <div class="col-md-3">
-        <div class="card shadow-sm border-0 h-100">
-            <div class="card-body">
-                <div class="d-flex align-items-center">
-                    <div class="icon-circle bg-warning text-white me-3"><i class="bi bi-exclamation-circle"></i></div>
-                    <div>
-                        <p class="text-muted mb-0">Baja temporal</p>
-                        <h4 class="mb-0 fw-bold">{{ status_counts.baja_temporal }}</h4>
-                    </div>
-                </div>
-            </div>
+    <div class="metric-tile">
+        <div class="icon-circle icon-warning"><svg class="icon" aria-hidden="true"><use href="#icon-alert-circle"></use></svg></div>
+        <div>
+            <p class="text-muted">Baja temporal</p>
+            <h3>{{ status_counts.baja_temporal }}</h3>
         </div>
     </div>
-    <div class="col-md-3">
-        <div class="card shadow-sm border-0 h-100">
-            <div class="card-body">
-                <div class="d-flex align-items-center">
-                    <div class="icon-circle bg-danger text-white me-3"><i class="bi bi-dash-circle"></i></div>
-                    <div>
-                        <p class="text-muted mb-0">Baja definitiva</p>
-                        <h4 class="mb-0 fw-bold">{{ status_counts.baja_definitiva }}</h4>
-                    </div>
-                </div>
-            </div>
+    <div class="metric-tile">
+        <div class="icon-circle icon-danger"><svg class="icon" aria-hidden="true"><use href="#icon-minus-circle"></use></svg></div>
+        <div>
+            <p class="text-muted">Baja definitiva</p>
+            <h3>{{ status_counts.baja_definitiva }}</h3>
         </div>
     </div>
-    <div class="col-md-3">
-        <div class="card shadow-sm border-0 h-100">
-            <div class="card-body">
-                <div class="d-flex align-items-center">
-                    <div class="icon-circle bg-info text-white me-3"><i class="bi bi-mortarboard"></i></div>
-                    <div>
-                        <p class="text-muted mb-0">Egresados</p>
-                        <h4 class="mb-0 fw-bold">{{ status_counts.egresado }}</h4>
-                    </div>
-                </div>
-            </div>
+    <div class="metric-tile">
+        <div class="icon-circle icon-info"><svg class="icon" aria-hidden="true"><use href="#icon-graduation"></use></svg></div>
+        <div>
+            <p class="text-muted">Egresados</p>
+            <h3>{{ status_counts.egresado }}</h3>
         </div>
     </div>
-    <div class="col-md-3">
-        <div class="card shadow-sm border-0 h-100">
-            <div class="card-body">
-                <div class="d-flex align-items-center">
-                    <div class="icon-circle bg-info text-white me-3"><i class="bi bi-diagram-3"></i></div>
-                    <div>
-                        <p class="text-muted mb-0">Grupos distintos</p>
-                        <h4 class="mb-0 fw-bold">{{ groups_count }}</h4>
-                    </div>
+</div>
+
+<div class="grid-layout" style="margin-top: 16px;">
+    <div class="app-card section-grid">
+        <div class="card-header-row">
+            <div>
+                <h4>Estadísticas por grupo y carrera</h4>
+                <p class="page-subtitle">Generadas con pandas</p>
+            </div>
+            <a class="button button-ghost" href="{% url 'students:student_list' %}"><svg class="icon" aria-hidden="true"><use href="#icon-table"></use></svg> Ver tabla completa</a>
+        </div>
+        {% if stats_by_group %}
+            <div class="table-responsive">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Grupo</th>
+                            <th>Carrera</th>
+                            <th>Total de estudiantes</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for row in stats_by_group %}
+                        <tr>
+                            <td><strong>{{ row.grupo }}</strong></td>
+                            <td>{{ row.carrera }}</td>
+                            <td>{{ row.total }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% if career_stats %}
+            <div class="section-grid">
+                <h6 class="text-muted">Resumen por carrera</h6>
+                <div class="table-responsive">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Carrera</th>
+                                <th class="text-end">Total</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for row in career_stats %}
+                            <tr>
+                                <td>{{ row.carrera }}</td>
+                                <td style="text-align: right;">{{ row.total }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
                 </div>
+            </div>
+            {% endif %}
+        {% else %}
+            <p class="text-muted">Aún no hay estudiantes registrados.</p>
+        {% endif %}
+    </div>
+    <div class="app-card section-grid">
+        <div class="card-header-row">
+            <div>
+                <h4>Universidades en el mundo</h4>
+                <p class="page-subtitle">Consulta universidades por país usando la API de Hipolabs.</p>
+            </div>
+        </div>
+        <a class="button button-primary" href="{% url 'students:universities' %}"><svg class="icon" aria-hidden="true"><use href="#icon-building"></use></svg> Ver universidades</a>
+        <div class="section-grid">
+            <h6 class="text-muted">Acciones rápidas</h6>
+            <div class="actions-row">
+                <a class="button button-secondary" href="{% url 'students:student_create' %}"><svg class="icon" aria-hidden="true"><use href="#icon-user-plus"></use></svg> Nuevo estudiante</a>
+                <a class="button button-secondary" href="{% url 'students:student_list' %}"><svg class="icon" aria-hidden="true"><use href="#icon-search"></use></svg> Buscar estudiantes</a>
             </div>
         </div>
     </div>
 </div>
 
-<div class="row g-4">
-    <div class="col-lg-8">
-        <div class="card shadow-sm border-0 h-100">
-            <div class="card-header bg-white d-flex justify-content-between align-items-center">
-                <div>
-                    <h5 class="mb-0">Estadísticas por grupo y carrera</h5>
-                    <small class="text-muted">Generadas con pandas</small>
-                </div>
-                <a class="btn btn-sm btn-outline-primary" href="{% url 'students:student_list' %}"><i class="bi bi-table"></i> Ver tabla completa</a>
-            </div>
-            <div class="card-body">
-                {% if stats_by_group %}
-                    <div class="table-responsive">
-                        <table class="table align-middle">
-                            <thead class="table-light">
-                                <tr>
-                                    <th>Grupo</th>
-                                    <th>Carrera</th>
-                                    <th>Total de estudiantes</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {% for row in stats_by_group %}
-                                <tr>
-                                    <td class="fw-semibold">{{ row.grupo }}</td>
-                                    <td>{{ row.carrera }}</td>
-                                    <td>{{ row.total }}</td>
-                                </tr>
-                                {% endfor %}
-                            </tbody>
-                        </table>
-                    </div>
-                    {% if career_stats %}
-                    <div class="row mt-3 g-3">
-                        <div class="col-lg-8">
-                            <h6 class="mb-2">Resumen por carrera</h6>
-                            <div class="table-responsive">
-                                <table class="table table-sm align-middle mb-0">
-                                    <thead class="table-light">
-                                        <tr>
-                                            <th>Carrera</th>
-                                            <th class="text-end">Total</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {% for row in career_stats %}
-                                        <tr>
-                                            <td>{{ row.carrera }}</td>
-                                            <td class="text-end">{{ row.total }}</td>
-                                        </tr>
-                                        {% endfor %}
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
-                    {% endif %}
-                {% else %}
-                    <p class="text-muted mb-0">Aún no hay estudiantes registrados.</p>
-                {% endif %}
+<div class="grid-layout" style="margin-top: 18px;">
+    <div class="app-card">
+        <div class="card-header-row">
+            <div>
+                <h6 style="margin:0;">Distribución por grupo</h6>
+                <small class="text-muted">Visualización con Chart.js</small>
             </div>
         </div>
-    </div>
-    <div class="col-lg-4">
-        <div class="card shadow-sm border-0 h-100">
-            <div class="card-header bg-white">
-                <h5 class="mb-0">Universidades en el mundo</h5>
-            </div>
-            <div class="card-body">
-                <p class="text-muted">Consulta universidades por país usando la API de Hipolabs.</p>
-                <a class="btn btn-primary w-100" href="{% url 'students:universities' %}"><i class="bi bi-building"></i> Ver universidades</a>
-                <div class="mt-4">
-                    <h6 class="text-muted text-uppercase">Acciones rápidas</h6>
-                    <div class="d-grid gap-2">
-                        <a class="btn btn-outline-secondary" href="{% url 'students:student_create' %}"><i class="bi bi-person-plus"></i> Nuevo estudiante</a>
-                        <a class="btn btn-outline-secondary" href="{% url 'students:student_list' %}"><i class="bi bi-search"></i> Buscar estudiantes</a>
-                    </div>
-                </div>
-            </div>
+        <div class="chart-wrapper">
+            <canvas id="groupChart"></canvas>
         </div>
     </div>
-</div>
-<div class="row g-4 mt-2">
-    <div class="col-lg-4">
-        <div class="card shadow-sm border-0 h-100">
-            <div class="card-header bg-white d-flex align-items-center justify-content-between">
-                <div>
-                    <h6 class="mb-0">Distribución por grupo</h6>
-                    <small class="text-muted">Visualización con Chart.js</small>
-                </div>
-            </div>
-            <div class="card-body chart-wrapper">
-                <canvas id="groupChart" class="w-100 h-100"></canvas>
+    <div class="app-card">
+        <div class="card-header-row">
+            <div>
+                <h6 style="margin:0;">Estados académicos</h6>
+                <small class="text-muted">Distribución por situación actual</small>
             </div>
         </div>
-    </div>
-    <div class="col-lg-4">
-        <div class="card shadow-sm border-0 h-100">
-            <div class="card-header bg-white d-flex align-items-center justify-content-between">
-                <div>
-                    <h6 class="mb-0">Estados académicos</h6>
-                    <small class="text-muted">Distribución por situación actual</small>
-                </div>
-            </div>
-            <div class="card-body chart-wrapper">
-                <canvas id="statusChart" class="w-100 h-100"></canvas>
-            </div>
+        <div class="chart-wrapper">
+            <canvas id="statusChart"></canvas>
         </div>
     </div>
-    <div class="col-lg-4">
-        <div class="card shadow-sm border-0 h-100">
-            <div class="card-header bg-white d-flex align-items-center justify-content-between">
-                <div>
-                    <h6 class="mb-0">Carreras con más estudiantes</h6>
-                    <small class="text-muted">Conteo por especialidad</small>
-                </div>
+    <div class="app-card">
+        <div class="card-header-row">
+            <div>
+                <h6 style="margin:0;">Carreras con más estudiantes</h6>
+                <small class="text-muted">Conteo por especialidad</small>
             </div>
-            <div class="card-body chart-wrapper">
-                <canvas id="careerChart" class="w-100 h-100"></canvas>
-            </div>
+        </div>
+        <div class="chart-wrapper">
+            <canvas id="careerChart"></canvas>
         </div>
     </div>
 </div>
@@ -214,7 +169,7 @@
 <script>
     (() => {
         const charts = JSON.parse(document.getElementById('charts-data').textContent);
-        const palette = ['#0d6efd', '#20c997', '#ffc107', '#6610f2', '#0dcaf0', '#dc3545'];
+        const palette = ['#2563eb', '#20c997', '#f59e0b', '#a855f7', '#0ea5e9', '#ef4444'];
 
         const groupCtx = document.getElementById('groupChart');
         if (groupCtx) {
@@ -244,7 +199,7 @@
                     labels: charts.status.labels,
                     datasets: [{
                         data: charts.status.values,
-                        backgroundColor: ['#198754', '#ffc107', '#dc3545', '#0dcaf0'],
+                        backgroundColor: ['#16a34a', '#f59e0b', '#ef4444', '#0ea5e9'],
                         borderWidth: 1,
                     }],
                 },
