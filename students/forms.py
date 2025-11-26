@@ -2,7 +2,7 @@
 import re
 from django import forms
 from django.core.validators import RegexValidator
-from .models import Student
+from .models import Career, Student
 
 
 class StudentForm(forms.ModelForm):
@@ -25,21 +25,37 @@ class StudentForm(forms.ModelForm):
         message="El grupo solo permite letras, números y guiones.",
     )
 
-    first_name = forms.CharField(label="Nombre", max_length=80, validators=[name_validator])
-    last_name = forms.CharField(label="Apellidos", max_length=120, validators=[name_validator])
-    career = forms.ChoiceField(label="Carrera/Especialidad", choices=Student.CAREER_CHOICES)
-    matricula = forms.CharField(label="Matrícula", max_length=50, validators=[matricula_validator])
-    email = forms.EmailField(label="Correo electrónico")
-    phone = forms.CharField(label="Teléfono", max_length=25, validators=[phone_validator])
-    group = forms.CharField(label="Grupo", max_length=50, validators=[group_validator])
-    status = forms.ChoiceField(label="Estado", choices=Student.STATUS_CHOICES)
-    notes = forms.CharField(label="Notas", widget=forms.Textarea(attrs={'rows': 3}), required=False, max_length=600)
+    nombre = forms.CharField(label="Nombre", max_length=100, validators=[name_validator])
+    apellido_paterno = forms.CharField(label="Apellido paterno", max_length=100, validators=[name_validator])
+    apellido_materno = forms.CharField(label="Apellido materno", max_length=100, validators=[name_validator])
+    carrera = forms.ModelChoiceField(label="Carrera", queryset=Career.objects.all())
+    matricula = forms.CharField(label="Matrícula", max_length=20, validators=[matricula_validator])
+    correo = forms.EmailField(label="Correo electrónico")
+    telefono = forms.CharField(label="Teléfono", max_length=15, validators=[phone_validator])
+    grupo = forms.CharField(label="Grupo", max_length=10, validators=[group_validator])
+    estado = forms.ChoiceField(label="Estado", choices=Student.STATUS_CHOICES)
+    direccion = forms.CharField(label="Dirección", widget=forms.Textarea(attrs={'rows': 2}))
+    fecha_nacimiento = forms.DateField(label="Fecha de nacimiento", widget=forms.DateInput(attrs={'type': 'date'}))
+    fecha_inscripcion = forms.DateField(label="Fecha de inscripción", widget=forms.DateInput(attrs={'type': 'date'}))
 
     class Meta:
         model = Student
-        fields = ['first_name', 'last_name', 'career', 'matricula', 'email', 'phone', 'group', 'status', 'notes']
+        fields = [
+            'nombre',
+            'apellido_paterno',
+            'apellido_materno',
+            'matricula',
+            'correo',
+            'telefono',
+            'direccion',
+            'fecha_nacimiento',
+            'grupo',
+            'carrera',
+            'estado',
+            'fecha_inscripcion',
+        ]
         widgets = {
-            'status': forms.Select(),
+            'estado': forms.Select(),
         }
 
     def __init__(self, *args, **kwargs):
@@ -50,20 +66,14 @@ class StudentForm(forms.ModelForm):
             field.widget.attrs['class'] = f"{existing} {css_class}".strip()
             field.widget.attrs.setdefault('placeholder', field.label)
             if isinstance(field.widget, forms.TextInput):
-                field.widget.attrs['maxlength'] = field.max_length or ''
+                field.widget.attrs['maxlength'] = getattr(field, 'max_length', '') or ''
 
-    def clean_phone(self):
+    def clean_telefono(self):
         """Valida longitud y formato del teléfono."""
-        phone = self.cleaned_data.get('phone', '').strip()
+        phone = self.cleaned_data.get('telefono', '').strip()
         if len(phone) < 6:
             raise forms.ValidationError('El teléfono debe contener al menos 6 caracteres.')
         return phone
-
-    def clean_notes(self):
-        notes = self.cleaned_data.get('notes')
-        if notes and len(notes) > 600:
-            raise forms.ValidationError('Las notas no pueden exceder 600 caracteres.')
-        return notes
 
     def clean_matricula(self):
         matricula = self.cleaned_data.get('matricula', '').strip()
