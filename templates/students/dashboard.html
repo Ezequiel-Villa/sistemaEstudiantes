@@ -125,6 +125,7 @@
                 <a class="btn btn-ghost" href="{% url 'students:student_list' %}"><svg class="icon" aria-hidden="true"><use href="#icon-search"></use></svg> Buscar estudiantes</a>
             </div>
         </div>
+        <div class="chart-box"><canvas id="careerChart"></canvas></div>
     </div>
 </div>
 {{ charts|json_script:"charts-data" }}
