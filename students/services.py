@@ -13,7 +13,7 @@ def generate_group_stats(students: Iterable[Student]) -> list[dict]:
     """Genera estadísticas por grupo y carrera utilizando pandas."""
     if not students:
         return []
-    data = [{'grupo': s.group, 'estado': s.status, 'carrera': s.career} for s in students]
+    data = [{'grupo': s.grupo, 'estado': s.estado, 'carrera': s.carrera.nombre} for s in students]
     df = pd.DataFrame(data)
     grouped = df.groupby(['grupo', 'carrera']).size().reset_index(name='total')
     return grouped.to_dict(orient='records')
@@ -23,7 +23,7 @@ def generate_career_stats(students: Iterable[Student]) -> list[dict]:
     """Devuelve el conteo de estudiantes por carrera."""
     if not students:
         return []
-    df = pd.DataFrame([{'carrera': s.career} for s in students])
+    df = pd.DataFrame([{'carrera': s.carrera.nombre} for s in students])
     grouped = df['carrera'].value_counts().reset_index()
     grouped.columns = ['carrera', 'total']
     return grouped.to_dict(orient='records')
@@ -32,14 +32,14 @@ def generate_career_stats(students: Iterable[Student]) -> list[dict]:
 def count_status(students: Iterable[Student]) -> dict:
     """Cuenta estudiantes por estado académico."""
     template = {
-        'inscrito': 0,
-        'baja_temporal': 0,
-        'baja_definitiva': 0,
-        'egresado': 0,
+        'Inscrito': 0,
+        'Baja temporal': 0,
+        'Baja definitiva': 0,
+        'Egresado': 0,
     }
     if not students:
         return template
-    df = pd.DataFrame([{'estado': s.status} for s in students])
+    df = pd.DataFrame([{'estado': s.estado} for s in students])
     counts = df['estado'].value_counts().to_dict()
     template.update(counts)
     return template
@@ -134,15 +134,18 @@ def dataframe_from_students(students: Iterable[Student]) -> pd.DataFrame:
     """Crea un DataFrame a partir de una lista/queryset de estudiantes."""
     records = [
         {
-            'Nombre': s.first_name,
-            'Apellidos': s.last_name,
-            'Carrera': s.career,
+            'Nombre': s.nombre,
+            'Apellido paterno': s.apellido_paterno,
+            'Apellido materno': s.apellido_materno,
+            'Carrera': s.carrera.nombre,
             'Matrícula': s.matricula,
-            'Email': s.email,
-            'Teléfono': s.phone,
-            'Grupo': s.group,
-            'Estado': dict(Student.STATUS_CHOICES).get(s.status, s.status),
-            'Notas': s.notes,
+            'Correo': s.correo,
+            'Teléfono': s.telefono,
+            'Grupo': s.grupo,
+            'Estado': s.estado,
+            'Fecha de nacimiento': s.fecha_nacimiento,
+            'Fecha de inscripción': s.fecha_inscripcion,
+            'Dirección': s.direccion,
             # Excel no admite zona horaria; convertimos a naive preservando hora local
             'Registrado': timezone.make_naive(s.created_at) if timezone.is_aware(s.created_at) else s.created_at,
         }
@@ -173,10 +176,10 @@ def build_chart_data(stats_by_group: list[dict], status_counts: dict) -> dict:
     group_values = [row['total'] for row in stats_by_group]
     status_labels = ['Inscrito', 'Baja temporal', 'Baja definitiva', 'Egresado']
     status_values = [
-        status_counts.get('inscrito', 0),
-        status_counts.get('baja_temporal', 0),
-        status_counts.get('baja_definitiva', 0),
-        status_counts.get('egresado', 0),
+        status_counts.get('Inscrito', 0),
+        status_counts.get('Baja temporal', 0),
+        status_counts.get('Baja definitiva', 0),
+        status_counts.get('Egresado', 0),
     ]
     return {
         'group': {'labels': group_labels, 'values': group_values},
