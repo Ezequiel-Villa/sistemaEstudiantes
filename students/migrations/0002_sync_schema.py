@@ -52,7 +52,7 @@ def forwards(apps, schema_editor):
     ensure_column(cursor, table, "grupo", "VARCHAR(10) DEFAULT ''")
     ensure_column(cursor, table, "estado", "VARCHAR(20) DEFAULT 'Inscrito'")
     ensure_column(cursor, table, "fecha_inscripcion", "DATE DEFAULT '2024-01-01'")
-    ensure_column(cursor, table, "updated_at", "DATETIME DEFAULT CURRENT_TIMESTAMP")
+    ensure_column(cursor, table, "updated_at", "DATETIME")
 
     # Add carrera_id after ensuring careers table exists.
     cursor.execute(f"PRAGMA table_info({table});")
@@ -97,6 +97,13 @@ def forwards(apps, schema_editor):
             "UPDATE students_student SET fecha_inscripcion = DATE(created_at) "
             "WHERE fecha_inscripcion IS NULL OR fecha_inscripcion = '2024-01-01';"
         )
+
+    # Initialize updated_at safely after column creation (SQLite does not allow
+    # non-constant defaults on ALTER TABLE).
+    cursor.execute(
+        "UPDATE students_student SET updated_at = COALESCE(updated_at, CURRENT_TIMESTAMP) "
+        "WHERE updated_at IS NULL;"
+    )
 
 
 def backwards(apps, schema_editor):  # pragma: no cover - irreversible helper
