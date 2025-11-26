@@ -1,38 +1,39 @@
 {% extends 'base.html' %}
 {% block title %}Detalle de estudiante{% endblock %}
 {% block content %}
-<div class="page-header">
+<section class="page-hero">
     <div>
-        <h1 class="page-title">{{ student.full_name }}</h1>
-        <p class="page-subtitle">Matrícula {{ student.matricula }}</p>
+        <p class="muted">Detalle</p>
+        <h1>{{ student.full_name }}</h1>
+        <p>Matrícula {{ student.matricula }}</p>
     </div>
-    <div class="actions-row">
-        <a class="button button-secondary" href="{% url 'students:student_list' %}"><svg class="icon" aria-hidden="true"><use href="#icon-arrow-left"></use></svg> Volver</a>
-        <a class="button button-primary" href="{% url 'students:student_update' student.pk %}"><svg class="icon" aria-hidden="true"><use href="#icon-pencil"></use></svg> Editar</a>
-        <a class="button button-danger" href="{% url 'students:student_delete' student.pk %}"><svg class="icon" aria-hidden="true"><use href="#icon-trash"></use></svg> Eliminar</a>
+    <div class="actions-inline">
+        <a class="btn btn-ghost" href="{% url 'students:student_list' %}"><svg class="icon" aria-hidden="true"><use href="#icon-arrow-left"></use></svg> Volver</a>
+        <a class="btn btn-plain" href="{% url 'students:student_update' student.pk %}"><svg class="icon" aria-hidden="true"><use href="#icon-pencil"></use></svg> Editar</a>
+        <a class="btn btn-danger" href="{% url 'students:student_delete' student.pk %}"><svg class="icon" aria-hidden="true"><use href="#icon-trash"></use></svg> Eliminar</a>
     </div>
-</div>
+</section>
 
-<div class="app-card" style="margin-bottom: 16px;">
+<div class="surface" style="margin-bottom: 16px;">
     <div class="form-grid">
-        <div class="form-section">
-            <p class="text-muted">Correo</p>
+        <div class="form-field">
+            <label>Correo</label>
             <p><strong>{{ student.email }}</strong></p>
         </div>
-        <div class="form-section">
-            <p class="text-muted">Teléfono</p>
+        <div class="form-field">
+            <label>Teléfono</label>
             <p><strong>{{ student.phone }}</strong></p>
         </div>
-        <div class="form-section">
-            <p class="text-muted">Grupo</p>
+        <div class="form-field">
+            <label>Grupo</label>
             <p><strong>{{ student.group }}</strong></p>
         </div>
-        <div class="form-section">
-            <p class="text-muted">Carrera/Especialidad</p>
+        <div class="form-field">
+            <label>Carrera/Especialidad</label>
             <p><strong>{{ student.career }}</strong></p>
         </div>
-        <div class="form-section">
-            <p class="text-muted">Estado</p>
+        <div class="form-field">
+            <label>Estado</label>
             <p>
                 {% if student.status == 'inscrito' %}
                     <span class="badge badge-success">Inscrito</span>
@@ -45,20 +46,20 @@
                 {% endif %}
             </p>
         </div>
-        <div class="form-section">
-            <p class="text-muted">Fecha de registro</p>
+        <div class="form-field">
+            <label>Fecha de registro</label>
             <p><strong>{{ student.created_at|date:"d/m/Y H:i" }}</strong></p>
         </div>
-        <div class="form-section" style="grid-column: 1 / -1;">
-            <p class="text-muted">Notas</p>
+        <div class="form-field" style="grid-column: 1 / -1;">
+            <label>Notas</label>
             <p><strong>{{ student.notes|default:'Sin notas registradas' }}</strong></p>
         </div>
     </div>
 </div>
 
-<div class="app-card">
-    <h5>Información relacionada</h5>
-    <p class="page-subtitle">Consulta universidades relevantes por país para contextualizar tu programa.</p>
-    <a class="button button-secondary" href="{% url 'students:universities' %}"><svg class="icon" aria-hidden="true"><use href="#icon-building"></use></svg> Explorar universidades</a>
+<div class="surface">
+    <h4 class="heading-title">Información relacionada</h4>
+    <p class="heading-sub">Consulta universidades relevantes por país para contextualizar tu programa.</p>
+    <a class="btn btn-primary" href="{% url 'students:universities' %}"><svg class="icon" aria-hidden="true"><use href="#icon-building"></use></svg> Explorar universidades</a>
 </div>
 {% endblock %}

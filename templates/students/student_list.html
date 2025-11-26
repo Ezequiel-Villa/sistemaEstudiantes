@@ -1,39 +1,41 @@
 {% extends 'base.html' %}
 {% block title %}Estudiantes{% endblock %}
 {% block content %}
-<div class="page-header">
+<section class="page-hero">
     <div>
-        <h1 class="page-title">Gestión de Estudiantes</h1>
-        <p class="page-subtitle">Administra el registro completo de estudiantes.</p>
+        <p class="muted">Administración</p>
+        <h1>Gestión de Estudiantes</h1>
+        <p>Administra el registro completo de estudiantes.</p>
     </div>
-    <div class="actions-row">
-        <a class="button button-secondary" href="{% url 'students:dashboard' %}"><svg class="icon" aria-hidden="true"><use href="#icon-gauge"></use></svg> Dashboard</a>
-        <a class="button button-primary" href="{% url 'students:student_create' %}"><svg class="icon" aria-hidden="true"><use href="#icon-user-plus"></use></svg> Agregar estudiante</a>
+    <div class="actions-inline">
+        <a class="btn btn-ghost" href="{% url 'students:dashboard' %}"><svg class="icon" aria-hidden="true"><use href="#icon-gauge"></use></svg> Dashboard</a>
+        <a class="btn btn-primary" href="{% url 'students:student_create' %}"><svg class="icon" aria-hidden="true"><use href="#icon-user-plus"></use></svg> Agregar estudiante</a>
     </div>
-    <div class="actions-row" style="margin-top: 12px;">
-        <a class="button button-ghost" href="{% url 'students:export_csv' %}"><svg class="icon" aria-hidden="true"><use href="#icon-download"></use></svg> Exportar CSV</a>
-        <a class="button button-ghost" href="{% url 'students:export_excel' %}"><svg class="icon" aria-hidden="true"><use href="#icon-save"></use></svg> Exportar Excel</a>
-    </div>
+</section>
+
+<div class="actions-inline" style="margin-bottom:12px;">
+    <a class="btn btn-ghost" href="{% url 'students:export_csv' %}"><svg class="icon" aria-hidden="true"><use href="#icon-download"></use></svg> Exportar CSV</a>
+    <a class="btn btn-ghost" href="{% url 'students:export_excel' %}"><svg class="icon" aria-hidden="true"><use href="#icon-save"></use></svg> Exportar Excel</a>
 </div>
 
-<div class="app-card">
+<div class="surface">
     <form class="form-grid" method="get" style="margin-bottom: 14px;">
-        <div class="form-section">
+        <div class="form-field">
             <label>Buscar por nombre o matrícula</label>
-            <input type="text" name="q" value="{{ query }}" class="app-input" placeholder="Ej: Juan" />
+            <input type="text" name="q" value="{{ query }}" class="input-control" placeholder="Ej: Juan" />
         </div>
-        <div class="form-section">
+        <div class="form-field">
             <label>Grupo</label>
-            <select name="group" class="app-input">
+            <select name="group" class="input-control">
                 <option value="">Todos</option>
                 {% for group in groups %}
                     <option value="{{ group }}" {% if group_filter == group %}selected{% endif %}>{{ group }}</option>
                 {% endfor %}
             </select>
         </div>
-        <div class="form-section">
+        <div class="form-field">
             <label>Estado</label>
-            <select name="status" class="app-input">
+            <select name="status" class="input-control">
                 <option value="">Todos</option>
                 <option value="inscrito" {% if status_filter == 'inscrito' %}selected{% endif %}>Inscrito</option>
                 <option value="baja_temporal" {% if status_filter == 'baja_temporal' %}selected{% endif %}>Baja temporal</option>
@@ -41,12 +43,12 @@
                 <option value="egresado" {% if status_filter == 'egresado' %}selected{% endif %}>Egresado</option>
             </select>
         </div>
-        <div class="form-section" style="align-self: end;">
-            <button class="button button-primary" type="submit"><svg class="icon" aria-hidden="true"><use href="#icon-filter"></use></svg> Filtrar</button>
+        <div class="form-field" style="align-self:end;">
+            <button class="btn btn-primary" type="submit"><svg class="icon" aria-hidden="true"><use href="#icon-filter"></use></svg> Filtrar</button>
         </div>
     </form>
 
-    <div class="table-responsive">
+    <div class="table-wrapper">
         <table class="data-table">
             <thead>
                 <tr>
@@ -78,17 +80,17 @@
                                 <span class="badge badge-info">Egresado</span>
                             {% endif %}
                         </td>
-                        <td>
+                        <td style="text-align:right;">
                             <div class="table-actions">
-                                <a class="button button-ghost button-sm" href="{% url 'students:student_detail' student.pk %}"><svg class="icon" aria-hidden="true"><use href="#icon-eye"></use></svg></a>
-                                <a class="button button-ghost button-sm" href="{% url 'students:student_update' student.pk %}"><svg class="icon" aria-hidden="true"><use href="#icon-pencil"></use></svg></a>
-                                <a class="button button-danger button-sm" href="{% url 'students:student_delete' student.pk %}"><svg class="icon" aria-hidden="true"><use href="#icon-trash"></use></svg></a>
+                                <a class="btn btn-ghost btn-sm" href="{% url 'students:student_detail' student.pk %}"><svg class="icon" aria-hidden="true"><use href="#icon-eye"></use></svg></a>
+                                <a class="btn btn-ghost btn-sm" href="{% url 'students:student_update' student.pk %}"><svg class="icon" aria-hidden="true"><use href="#icon-pencil"></use></svg></a>
+                                <a class="btn btn-danger btn-sm" href="{% url 'students:student_delete' student.pk %}"><svg class="icon" aria-hidden="true"><use href="#icon-trash"></use></svg></a>
                             </div>
                         </td>
                     </tr>
                 {% empty %}
                     <tr>
-                        <td colspan="7" style="text-align:center; padding: 18px;" class="text-muted">No se encontraron estudiantes con los filtros actuales.</td>
+                        <td colspan="7" style="text-align:center; padding: 18px;" class="muted">No se encontraron estudiantes con los filtros actuales.</td>
                     </tr>
                 {% endfor %}
             </tbody>

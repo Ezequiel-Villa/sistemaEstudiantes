@@ -1,31 +1,37 @@
 {% extends 'base.html' %}
 {% block title %}{{ is_edit|yesno:'Editar estudiante,Nuevo estudiante' }}{% endblock %}
 {% block content %}
-<div class="page-header">
+<section class="page-hero">
     <div>
-        <h1 class="page-title">{{ is_edit|yesno:'Editar estudiante,Nuevo estudiante' }}</h1>
-        <p class="page-subtitle">Completa los datos obligatorios del estudiante.</p>
+        <p class="muted">Formulario</p>
+        <h1>{{ is_edit|yesno:'Editar estudiante,Nuevo estudiante' }}</h1>
+        <p>Completa los datos obligatorios del estudiante.</p>
     </div>
-    <a class="button button-secondary" href="{% url 'students:student_list' %}"><svg class="icon" aria-hidden="true"><use href="#icon-arrow-left"></use></svg> Volver</a>
-</div>
+    <a class="btn btn-ghost" href="{% url 'students:student_list' %}"><svg class="icon" aria-hidden="true"><use href="#icon-arrow-left"></use></svg> Volver</a>
+</section>
 
 <form method="post" novalidate>
     {% csrf_token %}
     <div class="section-grid">
-        <div class="app-card">
-            <h4>Información Personal</h4>
-            <div class="form-grid" style="margin-top: 12px;">
-                <div class="form-section">
+        <div class="surface">
+            <div class="panel-heading">
+                <div>
+                    <p class="muted" style="margin:0;">Identidad</p>
+                    <h3 class="heading-title">Información Personal</h3>
+                </div>
+            </div>
+            <div class="form-grid">
+                <div class="form-field">
                     <label>{{ form.first_name.label }} <span class="badge badge-info">*</span></label>
                     {{ form.first_name }}
                     {% for error in form.first_name.errors %}<div class="error-text">{{ error }}</div>{% endfor %}
                 </div>
-                <div class="form-section">
+                <div class="form-field">
                     <label>{{ form.last_name.label }} <span class="badge badge-info">*</span></label>
                     {{ form.last_name }}
                     {% for error in form.last_name.errors %}<div class="error-text">{{ error }}</div>{% endfor %}
                 </div>
-                <div class="form-section">
+                <div class="form-field">
                     <label>{{ form.career.label }} <span class="badge badge-info">*</span></label>
                     {{ form.career }}
                     {% for error in form.career.errors %}<div class="error-text">{{ error }}</div>{% endfor %}
@@ -33,15 +39,20 @@
             </div>
         </div>
 
-        <div class="app-card">
-            <h4>Información de Contacto</h4>
-            <div class="form-grid" style="margin-top: 12px;">
-                <div class="form-section">
+        <div class="surface">
+            <div class="panel-heading">
+                <div>
+                    <p class="muted" style="margin:0;">Contacto</p>
+                    <h3 class="heading-title">Información de Contacto</h3>
+                </div>
+            </div>
+            <div class="form-grid">
+                <div class="form-field">
                     <label>{{ form.email.label }} <span class="badge badge-info">*</span></label>
                     {{ form.email }}
                     {% for error in form.email.errors %}<div class="error-text">{{ error }}</div>{% endfor %}
                 </div>
-                <div class="form-section">
+                <div class="form-field">
                     <label>{{ form.phone.label }} <span class="badge badge-info">*</span></label>
                     {{ form.phone }}
                     {% for error in form.phone.errors %}<div class="error-text">{{ error }}</div>{% endfor %}
@@ -49,25 +60,30 @@
             </div>
         </div>
 
-        <div class="app-card">
-            <h4>Información Académica</h4>
-            <div class="form-grid" style="margin-top: 12px;">
-                <div class="form-section">
+        <div class="surface">
+            <div class="panel-heading">
+                <div>
+                    <p class="muted" style="margin:0;">Academia</p>
+                    <h3 class="heading-title">Información Académica</h3>
+                </div>
+            </div>
+            <div class="form-grid">
+                <div class="form-field">
                     <label>{{ form.matricula.label }} <span class="badge badge-info">*</span></label>
                     {{ form.matricula }}
                     {% for error in form.matricula.errors %}<div class="error-text">{{ error }}</div>{% endfor %}
                 </div>
-                <div class="form-section">
+                <div class="form-field">
                     <label>{{ form.group.label }} <span class="badge badge-info">*</span></label>
                     {{ form.group }}
                     {% for error in form.group.errors %}<div class="error-text">{{ error }}</div>{% endfor %}
                 </div>
-                <div class="form-section">
+                <div class="form-field">
                     <label>{{ form.status.label }} <span class="badge badge-info">*</span></label>
                     {{ form.status }}
                     {% for error in form.status.errors %}<div class="error-text">{{ error }}</div>{% endfor %}
                 </div>
-                <div class="form-section" style="grid-column: 1 / -1;">
+                <div class="form-field" style="grid-column: 1 / -1;">
                     <label>{{ form.notes.label }}</label>
                     {{ form.notes }}
                     {% if form.notes.help_text %}<div class="form-hint">{{ form.notes.help_text }}</div>{% endif %}
@@ -84,9 +100,9 @@
         </div>
     </div>
 
-    <div class="actions-row" style="justify-content: flex-end; margin-top: 16px;">
-        <a class="button button-secondary" href="{% url 'students:student_list' %}">Cancelar</a>
-        <button class="button button-primary" type="submit"><svg class="icon" aria-hidden="true"><use href="#icon-save"></use></svg> Guardar estudiante</button>
+    <div class="form-actions">
+        <a class="btn btn-ghost" href="{% url 'students:student_list' %}">Cancelar</a>
+        <button class="btn btn-primary" type="submit"><svg class="icon" aria-hidden="true"><use href="#icon-save"></use></svg> Guardar estudiante</button>
     </div>
 </form>
 {% endblock %}

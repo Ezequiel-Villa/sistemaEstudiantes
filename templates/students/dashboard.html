@@ -1,163 +1,159 @@
 {% extends 'base.html' %}
 {% block title %}Dashboard · Sistema de Estudiantes{% endblock %}
 {% block content %}
-<div class="page-header">
+<section class="page-hero">
     <div>
-        <h1 class="page-title">Dashboard Principal</h1>
-        <p class="page-subtitle">Resumen general del sistema de registro de estudiantes.</p>
+        <p class="muted">Resumen general</p>
+        <h1>Dashboard Principal</h1>
+        <p>Visión global del sistema de registro de estudiantes.</p>
     </div>
-    <div class="actions-row">
-        <a class="button button-secondary" href="{% url 'students:student_list' %}"><svg class="icon" aria-hidden="true"><use href="#icon-table"></use></svg> Ver estudiantes</a>
-        <a class="button button-primary" href="{% url 'students:student_create' %}"><svg class="icon" aria-hidden="true"><use href="#icon-user-plus"></use></svg> Nuevo estudiante</a>
+    <div class="actions-inline">
+        <a class="btn btn-ghost" href="{% url 'students:student_list' %}"><svg class="icon" aria-hidden="true"><use href="#icon-table"></use></svg> Ver estudiantes</a>
+        <a class="btn btn-primary" href="{% url 'students:student_create' %}"><svg class="icon" aria-hidden="true"><use href="#icon-user-plus"></use></svg> Nuevo estudiante</a>
     </div>
+</section>
+
+<div class="stat-grid">
+    <article class="stat-card">
+        <span class="stat-icon" style="background: var(--accent-soft); color: var(--accent);"><svg class="icon" aria-hidden="true"><use href="#icon-users"></use></svg></span>
+        <div>
+            <p class="stat-title">Total de estudiantes</p>
+            <p class="stat-value">{{ students_total }}</p>
+        </div>
+    </article>
+    <article class="stat-card">
+        <span class="stat-icon" style="background: #e8f6ed; color: var(--success);"><svg class="icon" aria-hidden="true"><use href="#icon-check-circle"></use></svg></span>
+        <div>
+            <p class="stat-title">Inscritos</p>
+            <p class="stat-value">{{ status_counts.inscrito }}</p>
+        </div>
+    </article>
+    <article class="stat-card">
+        <span class="stat-icon" style="background: #fff4e5; color: var(--warning);"><svg class="icon" aria-hidden="true"><use href="#icon-alert-circle"></use></svg></span>
+        <div>
+            <p class="stat-title">Baja temporal</p>
+            <p class="stat-value">{{ status_counts.baja_temporal }}</p>
+        </div>
+    </article>
+    <article class="stat-card">
+        <span class="stat-icon" style="background: #ffe5e7; color: var(--danger);"><svg class="icon" aria-hidden="true"><use href="#icon-minus-circle"></use></svg></span>
+        <div>
+            <p class="stat-title">Baja definitiva</p>
+            <p class="stat-value">{{ status_counts.baja_definitiva }}</p>
+        </div>
+    </article>
+    <article class="stat-card">
+        <span class="stat-icon" style="background: #e0f2fe; color: var(--info);"><svg class="icon" aria-hidden="true"><use href="#icon-graduation"></use></svg></span>
+        <div>
+            <p class="stat-title">Egresados</p>
+            <p class="stat-value">{{ status_counts.egresado }}</p>
+        </div>
+    </article>
 </div>
 
-<div class="metrics-grid">
-    <div class="metric-tile">
-        <div class="icon-circle icon-primary"><svg class="icon" aria-hidden="true"><use href="#icon-users"></use></svg></div>
-        <div>
-            <p class="text-muted">Total de estudiantes</p>
-            <h3>{{ students_total }}</h3>
-        </div>
-    </div>
-    <div class="metric-tile">
-        <div class="icon-circle icon-success"><svg class="icon" aria-hidden="true"><use href="#icon-check-circle"></use></svg></div>
-        <div>
-            <p class="text-muted">Inscritos</p>
-            <h3>{{ status_counts.inscrito }}</h3>
-        </div>
-    </div>
-    <div class="metric-tile">
-        <div class="icon-circle icon-warning"><svg class="icon" aria-hidden="true"><use href="#icon-alert-circle"></use></svg></div>
-        <div>
-            <p class="text-muted">Baja temporal</p>
-            <h3>{{ status_counts.baja_temporal }}</h3>
-        </div>
-    </div>
-    <div class="metric-tile">
-        <div class="icon-circle icon-danger"><svg class="icon" aria-hidden="true"><use href="#icon-minus-circle"></use></svg></div>
-        <div>
-            <p class="text-muted">Baja definitiva</p>
-            <h3>{{ status_counts.baja_definitiva }}</h3>
-        </div>
-    </div>
-    <div class="metric-tile">
-        <div class="icon-circle icon-info"><svg class="icon" aria-hidden="true"><use href="#icon-graduation"></use></svg></div>
-        <div>
-            <p class="text-muted">Egresados</p>
-            <h3>{{ status_counts.egresado }}</h3>
-        </div>
-    </div>
-</div>
-
-<div class="grid-layout" style="margin-top: 16px;">
-    <div class="app-card section-grid">
-        <div class="card-header-row">
+<div class="section-grid" style="margin-top:18px;">
+    <div class="surface">
+        <div class="panel-heading">
             <div>
-                <h4>Estadísticas por grupo y carrera</h4>
-                <p class="page-subtitle">Generadas con pandas</p>
+                <p class="muted" style="margin:0;">Tablas dinámicas</p>
+                <h3 class="heading-title">Estadísticas por grupo y carrera</h3>
+                <p class="heading-sub">Generadas con pandas</p>
             </div>
-            <a class="button button-ghost" href="{% url 'students:student_list' %}"><svg class="icon" aria-hidden="true"><use href="#icon-table"></use></svg> Ver tabla completa</a>
+            <a class="btn btn-ghost" href="{% url 'students:student_list' %}"><svg class="icon" aria-hidden="true"><use href="#icon-table"></use></svg> Tabla completa</a>
         </div>
         {% if stats_by_group %}
-            <div class="table-responsive">
+        <div class="table-wrapper">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Grupo</th>
+                        <th>Carrera</th>
+                        <th>Total</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for row in stats_by_group %}
+                    <tr>
+                        <td><strong>{{ row.grupo }}</strong></td>
+                        <td>{{ row.carrera }}</td>
+                        <td>{{ row.total }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% if career_stats %}
+        <div class="surface" style="margin-top:12px; box-shadow:none; border:1px dashed var(--border);">
+            <p class="muted" style="margin:0 0 6px;">Resumen por carrera</p>
+            <div class="table-wrapper">
                 <table class="data-table">
                     <thead>
                         <tr>
-                            <th>Grupo</th>
                             <th>Carrera</th>
-                            <th>Total de estudiantes</th>
+                            <th class="text-end">Total</th>
                         </tr>
                     </thead>
                     <tbody>
-                        {% for row in stats_by_group %}
+                        {% for row in career_stats %}
                         <tr>
-                            <td><strong>{{ row.grupo }}</strong></td>
                             <td>{{ row.carrera }}</td>
-                            <td>{{ row.total }}</td>
+                            <td style="text-align:right;">{{ row.total }}</td>
                         </tr>
                         {% endfor %}
                     </tbody>
                 </table>
             </div>
-            {% if career_stats %}
-            <div class="section-grid">
-                <h6 class="text-muted">Resumen por carrera</h6>
-                <div class="table-responsive">
-                    <table class="data-table">
-                        <thead>
-                            <tr>
-                                <th>Carrera</th>
-                                <th class="text-end">Total</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {% for row in career_stats %}
-                            <tr>
-                                <td>{{ row.carrera }}</td>
-                                <td style="text-align: right;">{{ row.total }}</td>
-                            </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-            {% endif %}
+        </div>
+        {% endif %}
         {% else %}
-            <p class="text-muted">Aún no hay estudiantes registrados.</p>
+            <p class="muted">Aún no hay estudiantes registrados.</p>
         {% endif %}
     </div>
-    <div class="app-card section-grid">
-        <div class="card-header-row">
+    <div class="surface">
+        <div class="panel-heading">
             <div>
-                <h4>Universidades en el mundo</h4>
-                <p class="page-subtitle">Consulta universidades por país usando la API de Hipolabs.</p>
+                <p class="muted" style="margin:0;">Recursos externos</p>
+                <h3 class="heading-title">Universidades en el mundo</h3>
+                <p class="heading-sub">Consulta universidades por país usando la API de Hipolabs.</p>
             </div>
         </div>
-        <a class="button button-primary" href="{% url 'students:universities' %}"><svg class="icon" aria-hidden="true"><use href="#icon-building"></use></svg> Ver universidades</a>
-        <div class="section-grid">
-            <h6 class="text-muted">Acciones rápidas</h6>
-            <div class="actions-row">
-                <a class="button button-secondary" href="{% url 'students:student_create' %}"><svg class="icon" aria-hidden="true"><use href="#icon-user-plus"></use></svg> Nuevo estudiante</a>
-                <a class="button button-secondary" href="{% url 'students:student_list' %}"><svg class="icon" aria-hidden="true"><use href="#icon-search"></use></svg> Buscar estudiantes</a>
+        <div class="page-section">
+            <a class="btn btn-primary" href="{% url 'students:universities' %}"><svg class="icon" aria-hidden="true"><use href="#icon-building"></use></svg> Ver universidades</a>
+            <div class="actions-inline">
+                <a class="btn btn-ghost" href="{% url 'students:student_create' %}"><svg class="icon" aria-hidden="true"><use href="#icon-user-plus"></use></svg> Nuevo estudiante</a>
+                <a class="btn btn-ghost" href="{% url 'students:student_list' %}"><svg class="icon" aria-hidden="true"><use href="#icon-search"></use></svg> Buscar estudiantes</a>
             </div>
         </div>
     </div>
 </div>
 
-<div class="grid-layout" style="margin-top: 18px;">
-    <div class="app-card">
-        <div class="card-header-row">
+<div class="section-grid" style="margin-top:18px;">
+    <div class="surface">
+        <div class="panel-heading">
             <div>
-                <h6 style="margin:0;">Distribución por grupo</h6>
-                <small class="text-muted">Visualización con Chart.js</small>
+                <h4 class="heading-title">Distribución por grupo</h4>
+                <p class="heading-sub">Visualización con Chart.js</p>
             </div>
         </div>
-        <div class="chart-wrapper">
-            <canvas id="groupChart"></canvas>
-        </div>
+        <div class="chart-box"><canvas id="groupChart"></canvas></div>
     </div>
-    <div class="app-card">
-        <div class="card-header-row">
+    <div class="surface">
+        <div class="panel-heading">
             <div>
-                <h6 style="margin:0;">Estados académicos</h6>
-                <small class="text-muted">Distribución por situación actual</small>
+                <h4 class="heading-title">Estados académicos</h4>
+                <p class="heading-sub">Distribución por situación actual</p>
             </div>
         </div>
-        <div class="chart-wrapper">
-            <canvas id="statusChart"></canvas>
-        </div>
+        <div class="chart-box"><canvas id="statusChart"></canvas></div>
     </div>
-    <div class="app-card">
-        <div class="card-header-row">
+    <div class="surface">
+        <div class="panel-heading">
             <div>
-                <h6 style="margin:0;">Carreras con más estudiantes</h6>
-                <small class="text-muted">Conteo por especialidad</small>
+                <h4 class="heading-title">Carreras con más estudiantes</h4>
+                <p class="heading-sub">Conteo por especialidad</p>
             </div>
         </div>
-        <div class="chart-wrapper">
-            <canvas id="careerChart"></canvas>
-        </div>
+        <div class="chart-box"><canvas id="careerChart"></canvas></div>
     </div>
 </div>
 {{ charts|json_script:"charts-data" }}

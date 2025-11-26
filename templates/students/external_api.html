@@ -1,64 +1,72 @@
 {% extends 'base.html' %}
 {% block title %}Universidades en el mundo{% endblock %}
 {% block content %}
-<div class="page-header">
+<section class="page-hero">
     <div>
-        <h1 class="page-title">Integración con API Externa</h1>
-        <p class="page-subtitle">Consulta información adicional desde servicios REST externos.</p>
+        <p class="muted">API externa</p>
+        <h1>Integración con API Externa</h1>
+        <p>Consulta información adicional desde servicios REST externos.</p>
     </div>
-    <a class="button button-secondary" href="{% url 'students:dashboard' %}"><svg class="icon" aria-hidden="true"><use href="#icon-arrow-left"></use></svg> Dashboard</a>
-</div>
+    <a class="btn btn-ghost" href="{% url 'students:dashboard' %}"><svg class="icon" aria-hidden="true"><use href="#icon-arrow-left"></use></svg> Dashboard</a>
+</section>
 
-<div class="app-card">
-    <h5>Parámetros de búsqueda</h5>
-    <form class="form-grid" method="get" style="margin-top: 12px; align-items: end;">
-        <div class="form-section">
+<div class="surface">
+    <div class="panel-heading">
+        <div>
+            <p class="muted" style="margin:0;">Búsqueda</p>
+            <h3 class="heading-title">Parámetros de búsqueda</h3>
+        </div>
+    </div>
+    <form class="form-grid" method="get" style="align-items: end;">
+        <div class="form-field">
             <label>País</label>
-            <input type="text" name="country" value="{{ filters.country }}" placeholder="Ej: Mexico, Canada">
+            <input type="text" name="country" value="{{ filters.country }}" class="input-control" placeholder="Ej: Mexico, Canada">
         </div>
-        <div class="form-section">
+        <div class="form-field">
             <label>Nombre de universidad (opcional)</label>
-            <input type="text" name="name" value="{{ filters.name }}" placeholder="Ej: technology, national">
-            <small class="text-muted">Puedes combinar país y nombre para afinar la búsqueda.</small>
+            <input type="text" name="name" value="{{ filters.name }}" class="input-control" placeholder="Ej: technology, national">
+            <div class="form-hint">Puedes combinar país y nombre para afinar la búsqueda.</div>
         </div>
-        <div class="form-section">
-            <button class="button button-primary" type="submit"><svg class="icon" aria-hidden="true"><use href="#icon-search"></use></svg> Buscar</button>
+        <div class="form-field">
+            <button class="btn btn-primary" type="submit"><svg class="icon" aria-hidden="true"><use href="#icon-search"></use></svg> Buscar</button>
         </div>
     </form>
 
     {% if error %}
-        <div class="app-alert app-alert-danger" style="margin-top: 10px;">{{ error }}</div>
+        <div class="notice notice-error" style="margin-top: 10px;">{{ error }}</div>
     {% endif %}
     {% if warning %}
-        <div class="app-alert app-alert-warning" style="margin-top: 10px;">{{ warning }}</div>
-    {% endif %}
-
-    {% if data and data.records %}
-        <div class="grid-layout" style="margin-top: 14px;">
-            {% for row in data.records %}
-                <div class="app-card" style="border: 1px solid var(--app-border-soft); box-shadow: none;">
-                    <h5 style="margin-bottom:6px;">{{ row.name|default:'Universidad sin nombre' }}</h5>
-                    <p class="text-muted" style="margin:0;">País: {{ row.country|default:'N/D' }}</p>
-                    <p class="text-muted" style="margin:0;">Código: {{ row.alpha_two_code|default:'N/D' }}</p>
-                    {% if row.website %}
-                        <a class="button button-ghost button-sm" href="{{ row.website }}" target="_blank" rel="noopener">Sitio web</a>
-                    {% else %}
-                        <span class="text-muted">Sitio web no disponible</span>
-                    {% endif %}
-                </div>
-            {% endfor %}
-        </div>
-        <div class="app-card" style="margin-top: 16px;">
-            <h6>Universidades por país</h6>
-            <div class="chart-wrapper" style="height: 220px;">
-                <canvas id="universitiesChart"></canvas>
-            </div>
-        </div>
-        {{ data.chart|json_script:"universities-chart" }}
-    {% else %}
-        <p class="text-muted" style="margin-top: 12px;">No hay universidades para mostrar con los filtros actuales.</p>
+        <div class="notice" style="margin-top: 10px;">{{ warning }}</div>
     {% endif %}
 </div>
+
+{% if data and data.records %}
+<div class="section-grid" style="margin-top:14px;">
+    {% for row in data.records %}
+        <div class="surface" style="box-shadow: none; border:1px solid var(--border);">
+            <h4 class="heading-title" style="margin:0 0 6px;">{{ row.name|default:'Universidad sin nombre' }}</h4>
+            <p class="heading-sub" style="margin:0;">País: {{ row.country|default:'N/D' }}</p>
+            <p class="heading-sub" style="margin:0 0 10px;">Código: {{ row.alpha_two_code|default:'N/D' }}</p>
+            {% if row.website %}
+                <a class="btn btn-plain btn-sm" href="{{ row.website }}" target="_blank" rel="noopener">Sitio web</a>
+            {% else %}
+                <span class="muted">Sitio web no disponible</span>
+            {% endif %}
+        </div>
+    {% endfor %}
+</div>
+<div class="surface" style="margin-top: 16px;">
+    <div class="panel-heading">
+        <h4 class="heading-title">Universidades por país</h4>
+    </div>
+    <div class="chart-box" style="height:220px;">
+        <canvas id="universitiesChart"></canvas>
+    </div>
+</div>
+{{ data.chart|json_script:"universities-chart" }}
+{% else %}
+    <p class="muted" style="margin-top: 12px;">No hay universidades para mostrar con los filtros actuales.</p>
+{% endif %}
 {% endblock %}
 
 {% block extra_js %}
