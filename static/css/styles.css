@@ -1,4 +1,6 @@
 :root {
+    --layout-max-width: 1200px;
+    --layout-padding: 1.5rem;
     --app-bg: #f5f7fb;
     --app-primary: #2563eb;
     --app-primary-soft: #e5edff;
@@ -25,23 +27,21 @@ body {
     min-height: 100vh;
 }
 
-.app-container {
+.app-body { display: flex; min-height: 100vh; width: 100%; }
+
+.app-shell { flex: 1; display: flex; flex-direction: column; width: 100%; }
+
+.app-container,
+.topbar-inner,
+.footer-inner {
     width: 100%;
-    max-width: 1200px;
+    max-width: var(--layout-max-width);
     margin: 0 auto;
-    padding: 1.5rem 1.5rem 2rem;
+    padding: 1.5rem var(--layout-padding) 2rem;
 }
 
-.app-body {
-    display: flex;
-    min-height: 100vh;
-}
-
-.app-shell {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-}
+.topbar-inner,
+.footer-inner { padding: 0.75rem var(--layout-padding); }
 
 .app-header {
     position: sticky;
