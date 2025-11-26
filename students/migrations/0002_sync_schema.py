@@ -59,7 +59,7 @@ def forwards(apps, schema_editor):
     cols = {row[1] for row in cursor.fetchall()}
     if "carrera_id" not in cols:
         cursor.execute(
-            "ALTER TABLE students_student ADD COLUMN carrera_id INTEGER REFERENCES students_career(id) ON DELETE PROTECT DEFAULT 1;"
+            "ALTER TABLE students_student ADD COLUMN carrera_id INTEGER REFERENCES students_career(id) ON DELETE RESTRICT DEFAULT 1;"
         )
         # Ensure at least one carrera exists for FK default.
         cursor.execute("SELECT id FROM students_career ORDER BY id LIMIT 1;")
