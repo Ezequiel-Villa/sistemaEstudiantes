@@ -1,103 +1,137 @@
 {% extends 'base.html' %}
 {% block title %}Estudiantes{% endblock %}
+{% block extra_head %}
+<style>
+    .students-shell { display: flex; flex-direction: column; gap: 16px; }
+    .students-topbar { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; padding: 6px 4px 0; }
+    .students-topbar h1 { margin: 6px 0 4px; font-size: 1.9rem; letter-spacing: -0.02em; }
+    .students-topbar p { margin: 0; color: var(--text-muted); }
+    .filters-card { background: #fff; border-radius: 16px; padding: 14px 16px; box-shadow: 0 12px 32px rgba(15, 23, 42, 0.06); border: 1px solid #e8edf4; }
+    .filters-grid { display: grid; grid-template-columns: 1.2fr 0.8fr 0.8fr auto; gap: 12px; align-items: center; }
+    .filters-grid .search-box { position: relative; }
+    .filters-grid input, .filters-grid select { width: 100%; height: 46px; padding: 0 14px 0 42px; border-radius: 12px; border: 1px solid #e5e7eb; background: #f9fafb; font-size: 0.98rem; color: #111827; }
+    .filters-grid select { padding-left: 14px; background: #fff; }
+    .filters-grid input:focus, .filters-grid select:focus { outline: 2px solid #dbeafe; border-color: #93c5fd; box-shadow: 0 10px 24px rgba(37, 99, 235, 0.15); }
+    .search-icon { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); width: 18px; height: 18px; color: #9ca3af; }
+    .table-card { background: #fff; border-radius: 16px; border: 1px solid #e8edf4; box-shadow: 0 16px 36px rgba(15, 23, 42, 0.07); overflow: hidden; }
+    .table-meta { display: flex; justify-content: space-between; align-items: center; padding: 14px 16px; }
+    .table-meta .muted { margin: 0; }
+    table.student-table { width: 100%; border-collapse: separate; border-spacing: 0; }
+    table.student-table thead { background: #fff; }
+    table.student-table th { text-align: left; padding: 14px 16px; font-weight: 700; font-size: 0.95rem; color: #6b7280; border-bottom: 1px solid #eef2f7; }
+    table.student-table tbody tr { transition: background 0.15s ease; }
+    table.student-table tbody tr:hover { background: #f8fbff; }
+    table.student-table td { padding: 14px 16px; font-size: 0.97rem; color: #111827; border-bottom: 1px solid #f2f4f8; }
+    .status-pill { display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px; border-radius: 999px; font-weight: 700; font-size: 0.9rem; }
+    .status-inscrito { background: #e8f8f0; color: #15803d; border: 1px solid #bbf7d0; }
+    .status-baja-temporal { background: #fff6e5; color: #b45309; border: 1px solid #fcd34d; }
+    .status-baja-definitiva { background: #ffecec; color: #b91c1c; border: 1px solid #fecdd3; }
+    .status-egresado { background: #e5edff; color: #1d4ed8; border: 1px solid #bfdbfe; }
+    .table-actions { display: inline-flex; gap: 8px; justify-content: flex-end; }
+    .icon-btn { width: 34px; height: 34px; border-radius: 10px; border: 1px solid #e5e7eb; background: #f9fafb; display: grid; place-items: center; color: #4b5563; text-decoration: none; transition: all 0.15s ease; }
+    .icon-btn:hover { color: var(--accent); border-color: #cbd5e1; box-shadow: 0 10px 20px rgba(0,0,0,0.06); }
+    .icon-btn.danger { background: #fef2f2; color: #b91c1c; border-color: #fecdd3; }
+    .badge-tag { background: #f3f4f6; color: #374151; border-radius: 999px; padding: 6px 10px; font-weight: 600; border: 1px solid #e5e7eb; }
+    .export-links { display: flex; gap: 10px; }
+    @media (max-width: 900px) { .filters-grid { grid-template-columns: 1fr; } .table-meta { flex-direction: column; align-items: flex-start; gap: 8px; } }
+</style>
+{% endblock %}
 {% block content %}
-<section class="page-hero">
-    <div>
-        <p class="muted">Administración</p>
-        <h1>Gestión de Estudiantes</h1>
-        <p>Administra el registro completo de estudiantes.</p>
+<div class="students-shell">
+    <div class="students-topbar">
+        <div>
+            <p class="muted">Gestión del registro</p>
+            <h1>Estudiantes</h1>
+            <p>Consulta, filtra y administra los estudiantes.</p>
+        </div>
+        <a class="btn btn-primary" href="{% url 'students:student_create' %}"><svg class="icon" aria-hidden="true"><use href="#icon-user-plus"></use></svg> Agregar Estudiante</a>
     </div>
-    <div class="actions-inline">
-        <a class="btn btn-ghost" href="{% url 'students:dashboard' %}"><svg class="icon" aria-hidden="true"><use href="#icon-gauge"></use></svg> Dashboard</a>
-        <a class="btn btn-primary" href="{% url 'students:student_create' %}"><svg class="icon" aria-hidden="true"><use href="#icon-user-plus"></use></svg> Agregar estudiante</a>
-    </div>
-</section>
 
-<div class="actions-inline" style="margin-bottom:12px;">
-    <a class="btn btn-ghost" href="{% url 'students:export_csv' %}"><svg class="icon" aria-hidden="true"><use href="#icon-download"></use></svg> Exportar CSV</a>
-    <a class="btn btn-ghost" href="{% url 'students:export_excel' %}"><svg class="icon" aria-hidden="true"><use href="#icon-save"></use></svg> Exportar Excel</a>
-</div>
-
-<div class="surface">
-    <form class="form-grid filter-grid" method="get" style="margin-bottom: 14px;">
-        <div class="form-field">
-            <label>Buscar por nombre o matrícula</label>
-            <div class="input-adorned">
-                <svg class="icon" aria-hidden="true"><use href="#icon-search"></use></svg>
-                <input type="text" name="q" value="{{ query }}" class="input-control" placeholder="Ej: Juan" />
-            </div>
-        </div>
-        <div class="form-field">
-            <label>Grupo</label>
-            <select name="group" class="input-control">
-                <option value="">Todos</option>
-                {% for group in groups %}
-                    <option value="{{ group }}" {% if group_filter == group %}selected{% endif %}>{{ group }}</option>
-                {% endfor %}
-            </select>
-        </div>
-        <div class="form-field">
-            <label>Estado</label>
-            <select name="status" class="input-control">
-                <option value="">Todos</option>
-                <option value="inscrito" {% if status_filter == 'inscrito' %}selected{% endif %}>Inscrito</option>
-                <option value="baja_temporal" {% if status_filter == 'baja_temporal' %}selected{% endif %}>Baja temporal</option>
-                <option value="baja_definitiva" {% if status_filter == 'baja_definitiva' %}selected{% endif %}>Baja definitiva</option>
-                <option value="egresado" {% if status_filter == 'egresado' %}selected{% endif %}>Egresado</option>
-            </select>
-        </div>
-        <div class="form-field" style="align-self:end;">
+    <div class="filters-card">
+        <form class="filters-grid" method="get">
+            <label class="search-box">
+                <svg class="icon search-icon" aria-hidden="true"><use href="#icon-search"></use></svg>
+                <input type="text" name="q" value="{{ query }}" placeholder="Buscar por nombre, matrícula o correo" />
+            </label>
+            <label>
+                <select name="group">
+                    <option value="">Todos los grupos</option>
+                    {% for group in groups %}
+                        <option value="{{ group }}" {% if group_filter == group %}selected{% endif %}>{{ group }}</option>
+                    {% endfor %}
+                </select>
+            </label>
+            <label>
+                <select name="status">
+                    <option value="">Todos los estados</option>
+                    <option value="inscrito" {% if status_filter == 'inscrito' %}selected{% endif %}>Inscrito</option>
+                    <option value="baja_temporal" {% if status_filter == 'baja_temporal' %}selected{% endif %}>Baja temporal</option>
+                    <option value="baja_definitiva" {% if status_filter == 'baja_definitiva' %}selected{% endif %}>Baja definitiva</option>
+                    <option value="egresado" {% if status_filter == 'egresado' %}selected{% endif %}>Egresado</option>
+                </select>
+            </label>
             <button class="btn btn-primary" type="submit"><svg class="icon" aria-hidden="true"><use href="#icon-filter"></use></svg> Filtrar</button>
-        </div>
-    </form>
+        </form>
+    </div>
 
-    <div class="table-wrapper">
-        <table class="data-table">
-            <thead>
-                <tr>
-                    <th>Nombre</th>
-                    <th>Matrícula</th>
-                    <th>Correo</th>
-                    <th>Grupo</th>
-                    <th>Carrera</th>
-                    <th>Estado</th>
-                    <th style="text-align:right;">Acciones</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for student in students %}
+    <div class="table-card">
+        <div class="table-meta">
+            <div class="export-links">
+                <a class="btn btn-ghost" href="{% url 'students:export_csv' %}"><svg class="icon" aria-hidden="true"><use href="#icon-download"></use></svg> Exportar CSV</a>
+                <a class="btn btn-ghost" href="{% url 'students:export_excel' %}"><svg class="icon" aria-hidden="true"><use href="#icon-save"></use></svg> Exportar Excel</a>
+            </div>
+            <p class="muted">Mostrando {{ students|length }} estudiantes</p>
+        </div>
+        <div class="table-wrapper">
+            <table class="student-table">
+                <thead>
                     <tr>
-                        <td><strong>{{ student.full_name }}</strong></td>
-                        <td>{{ student.matricula }}</td>
-                        <td>{{ student.email }}</td>
-                    <td><span class="badge badge-tag">{{ student.group }}</span></td>
-                    <td><span class="badge badge-tag">{{ student.career }}</span></td>
-                        <td>
-                            {% if student.status == 'inscrito' %}
-                                <span class="badge badge-success">Inscrito</span>
-                            {% elif student.status == 'baja_temporal' %}
-                                <span class="badge badge-warning">Baja temporal</span>
-                            {% elif student.status == 'baja_definitiva' %}
-                                <span class="badge badge-danger">Baja definitiva</span>
-                            {% else %}
-                                <span class="badge badge-info">Egresado</span>
-                            {% endif %}
-                        </td>
-                        <td style="text-align:right;">
-                            <div class="table-actions">
-                                <a class="btn btn-ghost btn-sm view" href="{% url 'students:student_detail' student.pk %}"><svg class="icon" aria-hidden="true"><use href="#icon-eye"></use></svg></a>
-                                <a class="btn btn-ghost btn-sm edit" href="{% url 'students:student_update' student.pk %}"><svg class="icon" aria-hidden="true"><use href="#icon-pencil"></use></svg></a>
-                                <a class="btn btn-danger btn-sm" href="{% url 'students:student_delete' student.pk %}"><svg class="icon" aria-hidden="true"><use href="#icon-trash"></use></svg></a>
-                            </div>
-                        </td>
+                        <th>ID</th>
+                        <th>Nombre</th>
+                        <th>Matrícula</th>
+                        <th>Correo</th>
+                        <th>Grupo</th>
+                        <th>Carrera</th>
+                        <th>Estado</th>
+                        <th style="text-align:right;">Acciones</th>
                     </tr>
-                {% empty %}
-                    <tr>
-                        <td colspan="7" style="text-align:center; padding: 18px;" class="muted">No se encontraron estudiantes con los filtros actuales.</td>
-                    </tr>
-                {% endfor %}
-            </tbody>
-        </table>
+                </thead>
+                <tbody>
+                    {% for student in students %}
+                        <tr>
+                            <td>{{ student.pk }}</td>
+                            <td><strong>{{ student.full_name }}</strong></td>
+                            <td>{{ student.matricula }}</td>
+                            <td>{{ student.email }}</td>
+                            <td><span class="badge-tag">{{ student.group }}</span></td>
+                            <td>{{ student.career }}</td>
+                            <td>
+                                {% if student.status == 'inscrito' %}
+                                    <span class="status-pill status-inscrito">Inscrito</span>
+                                {% elif student.status == 'baja_temporal' %}
+                                    <span class="status-pill status-baja-temporal">Baja temporal</span>
+                                {% elif student.status == 'baja_definitiva' %}
+                                    <span class="status-pill status-baja-definitiva">Baja definitiva</span>
+                                {% else %}
+                                    <span class="status-pill status-egresado">Egresado</span>
+                                {% endif %}
+                            </td>
+                            <td style="text-align:right;">
+                                <div class="table-actions">
+                                    <a class="icon-btn" href="{% url 'students:student_detail' student.pk %}" aria-label="Ver estudiante"><svg class="icon" aria-hidden="true"><use href="#icon-eye"></use></svg></a>
+                                    <a class="icon-btn" href="{% url 'students:student_update' student.pk %}" aria-label="Editar estudiante"><svg class="icon" aria-hidden="true"><use href="#icon-pencil"></use></svg></a>
+                                    <a class="icon-btn danger" href="{% url 'students:student_delete' student.pk %}" aria-label="Eliminar estudiante"><svg class="icon" aria-hidden="true"><use href="#icon-trash"></use></svg></a>
+                                </div>
+                            </td>
+                        </tr>
+                    {% empty %}
+                        <tr>
+                            <td colspan="8" style="text-align:center; padding: 22px;" class="muted">No se encontraron estudiantes con los filtros actuales.</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
     </div>
 </div>
 {% endblock %}
