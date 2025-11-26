@@ -1,0 +1,198 @@
+[
+  {
+    "model": "students.career",
+    "pk": 1,
+    "fields": {
+      "nombre": "Ingeniería en Sistemas",
+      "clave": "ISC",
+      "created_at": "2024-01-01T00:00:00Z"
+    }
+  },
+  {
+    "model": "students.career",
+    "pk": 2,
+    "fields": {
+      "nombre": "Ingeniería Industrial",
+      "clave": "IIN",
+      "created_at": "2024-01-01T00:00:00Z"
+    }
+  },
+  {
+    "model": "students.career",
+    "pk": 3,
+    "fields": {
+      "nombre": "Arquitectura",
+      "clave": "ARQ",
+      "created_at": "2024-01-01T00:00:00Z"
+    }
+  },
+  {
+    "model": "students.career",
+    "pk": 4,
+    "fields": {
+      "nombre": "Administración",
+      "clave": "ADM",
+      "created_at": "2024-01-01T00:00:00Z"
+    }
+  },
+  {
+    "model": "students.student",
+    "pk": 1,
+    "fields": {
+      "nombre": "Ana",
+      "apellido_paterno": "García",
+      "apellido_materno": "López",
+      "matricula": "A001",
+      "correo": "ana.garcia@example.com",
+      "telefono": "+5215512345678",
+      "direccion": "Calle 1 #100, Ciudad",
+      "fecha_nacimiento": "2000-05-12",
+      "grupo": "A",
+      "carrera": 1,
+      "estado": "Inscrito",
+      "fecha_inscripcion": "2024-08-15",
+      "created_at": "2024-08-15T09:00:00Z",
+      "updated_at": "2024-08-15T09:00:00Z"
+    }
+  },
+  {
+    "model": "students.student",
+    "pk": 2,
+    "fields": {
+      "nombre": "Bruno",
+      "apellido_paterno": "Hernández",
+      "apellido_materno": "Pérez",
+      "matricula": "B002",
+      "correo": "bruno.hernandez@example.com",
+      "telefono": "+5215512345679",
+      "direccion": "Av. Reforma 200, Ciudad",
+      "fecha_nacimiento": "1999-11-02",
+      "grupo": "B",
+      "carrera": 2,
+      "estado": "Baja temporal",
+      "fecha_inscripcion": "2023-01-10",
+      "created_at": "2023-01-10T08:30:00Z",
+      "updated_at": "2024-02-01T10:15:00Z"
+    }
+  },
+  {
+    "model": "students.student",
+    "pk": 3,
+    "fields": {
+      "nombre": "Carla",
+      "apellido_paterno": "Ibarra",
+      "apellido_materno": "Mendoza",
+      "matricula": "C003",
+      "correo": "carla.ibarra@example.com",
+      "telefono": "+5215587654321",
+      "direccion": "Col. Centro 45, Ciudad",
+      "fecha_nacimiento": "2001-03-22",
+      "grupo": "C",
+      "carrera": 3,
+      "estado": "Inscrito",
+      "fecha_inscripcion": "2024-02-05",
+      "created_at": "2024-02-05T09:45:00Z",
+      "updated_at": "2024-06-18T12:00:00Z"
+    }
+  },
+  {
+    "model": "students.student",
+    "pk": 4,
+    "fields": {
+      "nombre": "Diego",
+      "apellido_paterno": "Juárez",
+      "apellido_materno": "Nava",
+      "matricula": "D004",
+      "correo": "diego.juarez@example.com",
+      "telefono": "+5215567890123",
+      "direccion": "Zona Norte 12, Ciudad",
+      "fecha_nacimiento": "2000-07-30",
+      "grupo": "A",
+      "carrera": 4,
+      "estado": "Egresado",
+      "fecha_inscripcion": "2021-08-20",
+      "created_at": "2021-08-20T10:00:00Z",
+      "updated_at": "2024-07-01T14:20:00Z"
+    }
+  },
+  {
+    "model": "students.student",
+    "pk": 5,
+    "fields": {
+      "nombre": "Elena",
+      "apellido_paterno": "Kuri",
+      "apellido_materno": "Ortiz",
+      "matricula": "E005",
+      "correo": "elena.kuri@example.com",
+      "telefono": "+5215543210987",
+      "direccion": "Calle Sur 33, Ciudad",
+      "fecha_nacimiento": "2002-09-10",
+      "grupo": "B",
+      "carrera": 1,
+      "estado": "Inscrito",
+      "fecha_inscripcion": "2024-08-10",
+      "created_at": "2024-08-10T08:00:00Z",
+      "updated_at": "2024-08-16T09:30:00Z"
+    }
+  },
+  {
+    "model": "students.student",
+    "pk": 6,
+    "fields": {
+      "nombre": "Fernando",
+      "apellido_paterno": "Lagos",
+      "apellido_materno": "Quintero",
+      "matricula": "F006",
+      "correo": "fernando.lagos@example.com",
+      "telefono": "+5215532109876",
+      "direccion": "Privada del Sol 8, Ciudad",
+      "fecha_nacimiento": "1998-12-18",
+      "grupo": "C",
+      "carrera": 2,
+      "estado": "Baja definitiva",
+      "fecha_inscripcion": "2022-01-12",
+      "created_at": "2022-01-12T07:50:00Z",
+      "updated_at": "2023-04-10T11:00:00Z"
+    }
+  },
+  {
+    "model": "students.student",
+    "pk": 7,
+    "fields": {
+      "nombre": "Gabriela",
+      "apellido_paterno": "Mora",
+      "apellido_materno": "Ramírez",
+      "matricula": "G007",
+      "correo": "gabriela.mora@example.com",
+      "telefono": "+5215545678901",
+      "direccion": "Bosques 23, Ciudad",
+      "fecha_nacimiento": "2001-01-28",
+      "grupo": "A",
+      "carrera": 3,
+      "estado": "Inscrito",
+      "fecha_inscripcion": "2023-09-05",
+      "created_at": "2023-09-05T10:00:00Z",
+      "updated_at": "2024-05-15T12:00:00Z"
+    }
+  },
+  {
+    "model": "students.student",
+    "pk": 8,
+    "fields": {
+      "nombre": "Hugo",
+      "apellido_paterno": "Neri",
+      "apellido_materno": "Santos",
+      "matricula": "H008",
+      "correo": "hugo.neri@example.com",
+      "telefono": "+5215512340987",
+      "direccion": "Av. Central 101, Ciudad",
+      "fecha_nacimiento": "1999-04-05",
+      "grupo": "B",
+      "carrera": 4,
+      "estado": "Baja temporal",
+      "fecha_inscripcion": "2022-08-25",
+      "created_at": "2022-08-25T09:10:00Z",
+      "updated_at": "2024-03-22T09:10:00Z"
+    }
+  }
+]
