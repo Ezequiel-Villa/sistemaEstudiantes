@@ -1,108 +1,164 @@
 {% extends 'base.html' %}
-{% block title %}{{ is_edit|yesno:'Editar estudiante,Nuevo estudiante' }}{% endblock %}
+{% block title %}{{ is_edit|yesno:'Editar Estudiante,Agregar Estudiante' }}{% endblock %}
+{% block extra_head %}
+<style>
+    :root {
+        --font-size: 16px;
+        --background: #ffffff;
+        --foreground: oklch(0.145 0 0);
+        --card: #ffffff;
+        --card-foreground: oklch(0.145 0 0);
+        --primary: #030213;
+        --primary-foreground: #ffffff;
+        --secondary: #eef2f6;
+        --secondary-foreground: #030213;
+        --muted: #ececf0;
+        --muted-foreground: #717182;
+        --accent: #1d4ed8;
+        --destructive: #d4183d;
+        --border: rgba(0, 0, 0, 0.08);
+        --input-background: #f3f3f5;
+        --radius: 0.625rem;
+    }
+
+    .form-shell { display: flex; flex-direction: column; gap: 18px; padding: 8px; background: #f8fafc; border-radius: calc(var(--radius) + 4px); }
+    .form-header { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 6px 2px; }
+    .form-header h1 { margin: 6px 0 4px; font-size: 1.9rem; letter-spacing: -0.02em; color: #0f172a; }
+    .form-header p { margin: 0; color: #6b7280; }
+    .form-cancel { display: inline-flex; align-items: center; gap: 6px; color: #6b7280; text-decoration: none; font-weight: 700; }
+    .form-cancel:hover { color: #1d4ed8; }
+
+    .card-grid { display: flex; flex-direction: column; gap: 16px; }
+    .form-card { background: #fff; border: 1px solid #e2e8f0; border-radius: 18px; padding: 18px 18px 10px; box-shadow: 0 16px 40px rgba(15, 23, 42, 0.08); }
+    .form-card h3 { margin: 0 0 10px; font-size: 1.15rem; color: #1f2937; }
+    .form-card p { margin: 0 0 16px; color: #94a3b8; }
+    .field-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 14px; }
+    .field-grid .full-row { grid-column: 1 / -1; }
+    .form-card label { display: flex; align-items: center; gap: 6px; font-weight: 700; color: #475569; margin-bottom: 6px; font-size: 0.95rem; }
+    .form-control, .form-select, textarea.form-control, .form-card input, .form-card select, .form-card textarea { width: 100%; border-radius: 14px; border: 1px solid #e2e8f0; padding: 12px 14px; background: var(--input-background); font-size: 0.98rem; color: #0f172a; transition: all 0.2s ease; }
+    .form-select, .form-card select { padding-right: 38px; background: #fff; }
+    .form-control:focus, .form-select:focus, textarea.form-control:focus, .form-card input:focus, .form-card select:focus, .form-card textarea:focus { outline: 2px solid #c7d2fe; border-color: #94a3b8; background: #fff; box-shadow: 0 14px 32px rgba(59, 130, 246, 0.18); }
+    textarea.form-control, .form-card textarea { min-height: 120px; resize: vertical; }
+
+    .form-actions { display: flex; justify-content: flex-start; gap: 12px; padding: 6px 2px; }
+    .btn-secondary { background: #f1f5f9; color: #475569; border: 1px solid #e2e8f0; border-radius: 14px; padding: 11px 16px; font-weight: 700; text-decoration: none; display: inline-flex; align-items: center; gap: 8px; }
+    .btn-secondary:hover { color: #0f172a; border-color: #cbd5e1; }
+    .btn-primary { border-radius: 14px; padding: 12px 18px; background: #1d4ed8; border: 1px solid #1d4ed8; color: #fff; font-weight: 700; box-shadow: 0 12px 28px rgba(37, 99, 235, 0.2); }
+    .btn-primary:hover { background: #1e40af; border-color: #1e40af; }
+
+    .form-note { font-size: 0.9rem; color: #94a3b8; margin-top: 6px; }
+    .badge-info { background: #e0ecff; color: #1d4ed8; padding: 2px 8px; border-radius: 999px; font-size: 0.78rem; border: 1px solid #bfdbfe; }
+    .error-text { color: #b91c1c; font-weight: 600; margin-top: 4px; font-size: 0.9rem; }
+    @media (max-width: 768px) { .form-header { flex-direction: column; align-items: flex-start; } }
+</style>
+{% endblock %}
 {% block content %}
-<section class="page-hero">
-    <div>
-        <p class="muted">Formulario</p>
-        <h1>{{ is_edit|yesno:'Editar estudiante,Nuevo estudiante' }}</h1>
-        <p>Completa los datos obligatorios del estudiante.</p>
+<div class="form-shell">
+    <div class="form-header">
+        <div>
+            <p class="muted">Formulario</p>
+            <h1>{{ is_edit|yesno:'Editar Estudiante,Agregar Estudiante' }}</h1>
+            <p>{{ is_edit|yesno:'Actualiza la información del estudiante,Completa el formulario para registrar un nuevo estudiante' }}</p>
+        </div>
+        <a class="form-cancel" href="{% url 'students:student_list' %}"><svg class="icon" aria-hidden="true"><use href="#icon-arrow-left"></use></svg> Cancelar</a>
     </div>
-    <a class="btn btn-ghost" href="{% url 'students:student_list' %}"><svg class="icon" aria-hidden="true"><use href="#icon-arrow-left"></use></svg> Volver</a>
-</section>
 
-<form method="post" novalidate>
-    {% csrf_token %}
-    <div class="section-grid">
-        <div class="surface">
-            <div class="panel-heading">
-                <div>
-                    <p class="muted" style="margin:0;">Identidad</p>
-                    <h3 class="heading-title">Información Personal</h3>
+    <form method="post" novalidate>
+        {% csrf_token %}
+        <div class="card-grid">
+            <div class="form-card">
+                <h3>Información Personal</h3>
+                <p>Completa los datos básicos del estudiante.</p>
+                <div class="field-grid">
+                    <div class="form-field">
+                        <label>{{ form.nombre.label }} <span class="badge-info">*</span></label>
+                        {{ form.nombre }}
+                        {% for error in form.nombre.errors %}<div class="error-text">{{ error }}</div>{% endfor %}
+                    </div>
+                    <div class="form-field">
+                        <label>{{ form.apellido_paterno.label }} <span class="badge-info">*</span></label>
+                        {{ form.apellido_paterno }}
+                        {% for error in form.apellido_paterno.errors %}<div class="error-text">{{ error }}</div>{% endfor %}
+                    </div>
+                    <div class="form-field">
+                        <label>{{ form.apellido_materno.label }} <span class="badge-info">*</span></label>
+                        {{ form.apellido_materno }}
+                        {% for error in form.apellido_materno.errors %}<div class="error-text">{{ error }}</div>{% endfor %}
+                    </div>
+                    <div class="form-field">
+                        <label>{{ form.fecha_nacimiento.label }} <span class="badge-info">*</span></label>
+                        {{ form.fecha_nacimiento }}
+                        {% for error in form.fecha_nacimiento.errors %}<div class="error-text">{{ error }}</div>{% endfor %}
+                    </div>
+                    <div class="form-field">
+                        <label>{{ form.matricula.label }} <span class="badge-info">*</span></label>
+                        {{ form.matricula }}
+                        {% for error in form.matricula.errors %}<div class="error-text">{{ error }}</div>{% endfor %}
+                    </div>
                 </div>
             </div>
-            <div class="form-grid">
-                <div class="form-field">
-                    <label>{{ form.first_name.label }} <span class="badge badge-info">*</span></label>
-                    {{ form.first_name }}
-                    {% for error in form.first_name.errors %}<div class="error-text">{{ error }}</div>{% endfor %}
+
+            <div class="form-card">
+                <h3>Información de Contacto</h3>
+                <p>Datos para comunicación directa con el estudiante.</p>
+                <div class="field-grid">
+                    <div class="form-field">
+                        <label>{{ form.correo.label }} <span class="badge-info">*</span></label>
+                        {{ form.correo }}
+                        {% for error in form.correo.errors %}<div class="error-text">{{ error }}</div>{% endfor %}
+                    </div>
+                    <div class="form-field">
+                        <label>{{ form.telefono.label }} <span class="badge-info">*</span></label>
+                        {{ form.telefono }}
+                        {% for error in form.telefono.errors %}<div class="error-text">{{ error }}</div>{% endfor %}
+                    </div>
+                    <div class="form-field full-row">
+                        <label>{{ form.direccion.label }} <span class="badge-info">*</span></label>
+                        {{ form.direccion }}
+                        {% for error in form.direccion.errors %}<div class="error-text">{{ error }}</div>{% endfor %}
+                    </div>
                 </div>
-                <div class="form-field">
-                    <label>{{ form.last_name.label }} <span class="badge badge-info">*</span></label>
-                    {{ form.last_name }}
-                    {% for error in form.last_name.errors %}<div class="error-text">{{ error }}</div>{% endfor %}
+            </div>
+
+            <div class="form-card">
+                <h3>Información Académica</h3>
+                <p>Selecciona la carrera, grupo y estado actual.</p>
+                <div class="field-grid">
+                    <div class="form-field">
+                        <label>{{ form.carrera.label }} <span class="badge-info">*</span></label>
+                        {{ form.carrera }}
+                        {% for error in form.carrera.errors %}<div class="error-text">{{ error }}</div>{% endfor %}
+                    </div>
+                    <div class="form-field">
+                        <label>{{ form.grupo.label }} <span class="badge-info">*</span></label>
+                        {{ form.grupo }}
+                        {% for error in form.grupo.errors %}<div class="error-text">{{ error }}</div>{% endfor %}
+                    </div>
+                    <div class="form-field">
+                        <label>{{ form.estado.label }} <span class="badge-info">*</span></label>
+                        {{ form.estado }}
+                        {% for error in form.estado.errors %}<div class="error-text">{{ error }}</div>{% endfor %}
+                    </div>
+                    <div class="form-field">
+                        <label>{{ form.fecha_inscripcion.label }} <span class="badge-info">*</span></label>
+                        {{ form.fecha_inscripcion }}
+                        {% for error in form.fecha_inscripcion.errors %}<div class="error-text">{{ error }}</div>{% endfor %}
+                    </div>
                 </div>
-                <div class="form-field">
-                    <label>{{ form.career.label }} <span class="badge badge-info">*</span></label>
-                    {{ form.career }}
-                    {% for error in form.career.errors %}<div class="error-text">{{ error }}</div>{% endfor %}
-                </div>
+                {% if form.non_field_errors %}
+                    <div class="error-text" style="margin-top: 6px;">
+                        {% for error in form.non_field_errors %}
+                            <div>{{ error }}</div>
+                        {% endfor %}
+                    </div>
+                {% endif %}
             </div>
         </div>
 
-        <div class="surface">
-            <div class="panel-heading">
-                <div>
-                    <p class="muted" style="margin:0;">Contacto</p>
-                    <h3 class="heading-title">Información de Contacto</h3>
-                </div>
-            </div>
-            <div class="form-grid">
-                <div class="form-field">
-                    <label>{{ form.email.label }} <span class="badge badge-info">*</span></label>
-                    {{ form.email }}
-                    {% for error in form.email.errors %}<div class="error-text">{{ error }}</div>{% endfor %}
-                </div>
-                <div class="form-field">
-                    <label>{{ form.phone.label }} <span class="badge badge-info">*</span></label>
-                    {{ form.phone }}
-                    {% for error in form.phone.errors %}<div class="error-text">{{ error }}</div>{% endfor %}
-                </div>
-            </div>
+        <div class="form-actions">
+            <button class="btn btn-primary" type="submit"><svg class="icon" aria-hidden="true"><use href="#icon-save"></use></svg> {{ is_edit|yesno:'Guardar Cambios,Registrar Estudiante' }}</button>
+            <a class="btn-secondary" href="{% url 'students:student_list' %}">Cancelar</a>
         </div>
-
-        <div class="surface">
-            <div class="panel-heading">
-                <div>
-                    <p class="muted" style="margin:0;">Academia</p>
-                    <h3 class="heading-title">Información Académica</h3>
-                </div>
-            </div>
-            <div class="form-grid">
-                <div class="form-field">
-                    <label>{{ form.matricula.label }} <span class="badge badge-info">*</span></label>
-                    {{ form.matricula }}
-                    {% for error in form.matricula.errors %}<div class="error-text">{{ error }}</div>{% endfor %}
-                </div>
-                <div class="form-field">
-                    <label>{{ form.group.label }} <span class="badge badge-info">*</span></label>
-                    {{ form.group }}
-                    {% for error in form.group.errors %}<div class="error-text">{{ error }}</div>{% endfor %}
-                </div>
-                <div class="form-field">
-                    <label>{{ form.status.label }} <span class="badge badge-info">*</span></label>
-                    {{ form.status }}
-                    {% for error in form.status.errors %}<div class="error-text">{{ error }}</div>{% endfor %}
-                </div>
-                <div class="form-field" style="grid-column: 1 / -1;">
-                    <label>{{ form.notes.label }}</label>
-                    {{ form.notes }}
-                    {% if form.notes.help_text %}<div class="form-hint">{{ form.notes.help_text }}</div>{% endif %}
-                    {% for error in form.notes.errors %}<div class="error-text">{{ error }}</div>{% endfor %}
-                </div>
-            </div>
-            {% if form.non_field_errors %}
-                <div class="error-text" style="margin-top: 10px;">
-                    {% for error in form.non_field_errors %}
-                        <div>{{ error }}</div>
-                    {% endfor %}
-                </div>
-            {% endif %}
-        </div>
-    </div>
-
-    <div class="form-actions">
-        <a class="btn btn-ghost" href="{% url 'students:student_list' %}">Cancelar</a>
-        <button class="btn btn-primary" type="submit"><svg class="icon" aria-hidden="true"><use href="#icon-save"></use></svg> Guardar estudiante</button>
-    </div>
-</form>
+    </form>
+</div>
 {% endblock %}
