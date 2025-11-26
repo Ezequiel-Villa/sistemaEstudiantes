@@ -3,13 +3,8 @@
 {% block content %}
 <section class="page-hero">
     <div>
-        <p class="muted">Resumen general</p>
-        <h1>Dashboard Principal</h1>
-        <p>Visión global del sistema de registro de estudiantes.</p>
-    </div>
-    <div class="actions-inline">
-        <a class="btn btn-ghost" href="{% url 'students:student_list' %}"><svg class="icon" aria-hidden="true"><use href="#icon-table"></use></svg> Ver estudiantes</a>
-        <a class="btn btn-primary" href="{% url 'students:student_create' %}"><svg class="icon" aria-hidden="true"><use href="#icon-user-plus"></use></svg> Nuevo estudiante</a>
+        <p class="muted">Dashboard</p>
+        <h1>Vista general del sistema de registro de estudiantes</h1>
     </div>
 </section>
 
@@ -51,15 +46,14 @@
     </article>
 </div>
 
-<div class="section-grid" style="margin-top:18px;">
+<div class="dashboard-split" style="margin-top:18px;">
     <div class="surface">
         <div class="panel-heading">
             <div>
                 <p class="muted" style="margin:0;">Tablas dinámicas</p>
-                <h3 class="heading-title">Estadísticas por grupo y carrera</h3>
-                <p class="heading-sub">Generadas con pandas</p>
+                <h3 class="heading-title">Estudiantes por grupo y carrera</h3>
             </div>
-            <a class="btn btn-ghost" href="{% url 'students:student_list' %}"><svg class="icon" aria-hidden="true"><use href="#icon-table"></use></svg> Tabla completa</a>
+            <a class="btn btn-ghost" href="{% url 'students:student_list' %}"><svg class="icon" aria-hidden="true"><use href="#icon-table"></use></svg> Ver listado</a>
         </div>
         {% if stats_by_group %}
         <div class="table-wrapper">
@@ -82,29 +76,6 @@
                 </tbody>
             </table>
         </div>
-        {% if career_stats %}
-        <div class="surface" style="margin-top:12px; box-shadow:none; border:1px dashed var(--border);">
-            <p class="muted" style="margin:0 0 6px;">Resumen por carrera</p>
-            <div class="table-wrapper">
-                <table class="data-table">
-                    <thead>
-                        <tr>
-                            <th>Carrera</th>
-                            <th class="text-end">Total</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for row in career_stats %}
-                        <tr>
-                            <td>{{ row.carrera }}</td>
-                            <td style="text-align:right;">{{ row.total }}</td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            </div>
-        </div>
-        {% endif %}
         {% else %}
             <p class="muted">Aún no hay estudiantes registrados.</p>
         {% endif %}
@@ -112,31 +83,15 @@
     <div class="surface">
         <div class="panel-heading">
             <div>
-                <p class="muted" style="margin:0;">Recursos externos</p>
-                <h3 class="heading-title">Universidades en el mundo</h3>
-                <p class="heading-sub">Consulta universidades por país usando la API de Hipolabs.</p>
-            </div>
-        </div>
-        <div class="page-section">
-            <a class="btn btn-primary" href="{% url 'students:universities' %}"><svg class="icon" aria-hidden="true"><use href="#icon-building"></use></svg> Ver universidades</a>
-            <div class="actions-inline">
-                <a class="btn btn-ghost" href="{% url 'students:student_create' %}"><svg class="icon" aria-hidden="true"><use href="#icon-user-plus"></use></svg> Nuevo estudiante</a>
-                <a class="btn btn-ghost" href="{% url 'students:student_list' %}"><svg class="icon" aria-hidden="true"><use href="#icon-search"></use></svg> Buscar estudiantes</a>
-            </div>
-        </div>
-    </div>
-</div>
-
-<div class="section-grid" style="margin-top:18px;">
-    <div class="surface">
-        <div class="panel-heading">
-            <div>
-                <h4 class="heading-title">Distribución por grupo</h4>
-                <p class="heading-sub">Visualización con Chart.js</p>
+                <p class="muted" style="margin:0;">Visualización</p>
+                <h3 class="heading-title">Estudiantes por grupo</h3>
             </div>
         </div>
         <div class="chart-box"><canvas id="groupChart"></canvas></div>
     </div>
+</div>
+
+<div class="chart-grid" style="margin-top:18px;">
     <div class="surface">
         <div class="panel-heading">
             <div>
@@ -151,6 +106,23 @@
             <div>
                 <h4 class="heading-title">Carreras con más estudiantes</h4>
                 <p class="heading-sub">Conteo por especialidad</p>
+            </div>
+        </div>
+        <div class="chart-box"><canvas id="careerChart"></canvas></div>
+    </div>
+    <div class="surface">
+        <div class="panel-heading">
+            <div>
+                <p class="muted" style="margin:0;">Recursos externos</p>
+                <h4 class="heading-title">Universidades en el mundo</h4>
+                <p class="heading-sub">Consulta universidades por país usando la API de Hipolabs.</p>
+            </div>
+        </div>
+        <div class="page-section">
+            <a class="btn btn-primary" href="{% url 'students:universities' %}"><svg class="icon" aria-hidden="true"><use href="#icon-building"></use></svg> Ver universidades</a>
+            <div class="actions-inline">
+                <a class="btn btn-ghost" href="{% url 'students:student_create' %}"><svg class="icon" aria-hidden="true"><use href="#icon-user-plus"></use></svg> Nuevo estudiante</a>
+                <a class="btn btn-ghost" href="{% url 'students:student_list' %}"><svg class="icon" aria-hidden="true"><use href="#icon-search"></use></svg> Buscar estudiantes</a>
             </div>
         </div>
         <div class="chart-box"><canvas id="careerChart"></canvas></div>
