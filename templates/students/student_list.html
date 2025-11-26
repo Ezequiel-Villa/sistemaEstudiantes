@@ -95,10 +95,10 @@
             <label>
                 <select name="status">
                     <option value="">Todos los estados</option>
-                    <option value="inscrito" {% if status_filter == 'inscrito' %}selected{% endif %}>Inscrito</option>
-                    <option value="baja_temporal" {% if status_filter == 'baja_temporal' %}selected{% endif %}>Baja temporal</option>
-                    <option value="baja_definitiva" {% if status_filter == 'baja_definitiva' %}selected{% endif %}>Baja definitiva</option>
-                    <option value="egresado" {% if status_filter == 'egresado' %}selected{% endif %}>Egresado</option>
+                    <option value="Inscrito" {% if status_filter == 'Inscrito' %}selected{% endif %}>Inscrito</option>
+                    <option value="Baja temporal" {% if status_filter == 'Baja temporal' %}selected{% endif %}>Baja temporal</option>
+                    <option value="Baja definitiva" {% if status_filter == 'Baja definitiva' %}selected{% endif %}>Baja definitiva</option>
+                    <option value="Egresado" {% if status_filter == 'Egresado' %}selected{% endif %}>Egresado</option>
                 </select>
             </label>
             <button class="btn btn-primary" type="submit"><svg class="icon" aria-hidden="true"><use href="#icon-filter"></use></svg> Filtrar</button>
@@ -133,15 +133,15 @@
                             <td>{{ student.pk }}</td>
                             <td><strong>{{ student.full_name }}</strong></td>
                             <td>{{ student.matricula }}</td>
-                            <td>{{ student.email }}</td>
-                            <td><span class="badge-tag">{{ student.group }}</span></td>
-                            <td>{{ student.career }}</td>
+                            <td>{{ student.correo }}</td>
+                            <td><span class="badge-tag">{{ student.grupo }}</span></td>
+                            <td>{{ student.carrera.nombre }}</td>
                             <td>
-                                {% if student.status == 'inscrito' %}
+                                {% if student.estado == 'Inscrito' %}
                                     <span class="status-pill status-inscrito">Inscrito</span>
-                                {% elif student.status == 'baja_temporal' %}
+                                {% elif student.estado == 'Baja temporal' %}
                                     <span class="status-pill status-baja-temporal">Baja temporal</span>
-                                {% elif student.status == 'baja_definitiva' %}
+                                {% elif student.estado == 'Baja definitiva' %}
                                     <span class="status-pill status-baja-definitiva">Baja definitiva</span>
                                 {% else %}
                                     <span class="status-pill status-egresado">Egresado</span>

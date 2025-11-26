@@ -71,14 +71,24 @@
                 <p>Completa los datos básicos del estudiante.</p>
                 <div class="field-grid">
                     <div class="form-field">
-                        <label>{{ form.first_name.label }} <span class="badge-info">*</span></label>
-                        {{ form.first_name }}
-                        {% for error in form.first_name.errors %}<div class="error-text">{{ error }}</div>{% endfor %}
+                        <label>{{ form.nombre.label }} <span class="badge-info">*</span></label>
+                        {{ form.nombre }}
+                        {% for error in form.nombre.errors %}<div class="error-text">{{ error }}</div>{% endfor %}
                     </div>
                     <div class="form-field">
-                        <label>{{ form.last_name.label }} <span class="badge-info">*</span></label>
-                        {{ form.last_name }}
-                        {% for error in form.last_name.errors %}<div class="error-text">{{ error }}</div>{% endfor %}
+                        <label>{{ form.apellido_paterno.label }} <span class="badge-info">*</span></label>
+                        {{ form.apellido_paterno }}
+                        {% for error in form.apellido_paterno.errors %}<div class="error-text">{{ error }}</div>{% endfor %}
+                    </div>
+                    <div class="form-field">
+                        <label>{{ form.apellido_materno.label }} <span class="badge-info">*</span></label>
+                        {{ form.apellido_materno }}
+                        {% for error in form.apellido_materno.errors %}<div class="error-text">{{ error }}</div>{% endfor %}
+                    </div>
+                    <div class="form-field">
+                        <label>{{ form.fecha_nacimiento.label }} <span class="badge-info">*</span></label>
+                        {{ form.fecha_nacimiento }}
+                        {% for error in form.fecha_nacimiento.errors %}<div class="error-text">{{ error }}</div>{% endfor %}
                     </div>
                     <div class="form-field">
                         <label>{{ form.matricula.label }} <span class="badge-info">*</span></label>
@@ -93,14 +103,19 @@
                 <p>Datos para comunicación directa con el estudiante.</p>
                 <div class="field-grid">
                     <div class="form-field">
-                        <label>{{ form.email.label }} <span class="badge-info">*</span></label>
-                        {{ form.email }}
-                        {% for error in form.email.errors %}<div class="error-text">{{ error }}</div>{% endfor %}
+                        <label>{{ form.correo.label }} <span class="badge-info">*</span></label>
+                        {{ form.correo }}
+                        {% for error in form.correo.errors %}<div class="error-text">{{ error }}</div>{% endfor %}
                     </div>
                     <div class="form-field">
-                        <label>{{ form.phone.label }} <span class="badge-info">*</span></label>
-                        {{ form.phone }}
-                        {% for error in form.phone.errors %}<div class="error-text">{{ error }}</div>{% endfor %}
+                        <label>{{ form.telefono.label }} <span class="badge-info">*</span></label>
+                        {{ form.telefono }}
+                        {% for error in form.telefono.errors %}<div class="error-text">{{ error }}</div>{% endfor %}
+                    </div>
+                    <div class="form-field full-row">
+                        <label>{{ form.direccion.label }} <span class="badge-info">*</span></label>
+                        {{ form.direccion }}
+                        {% for error in form.direccion.errors %}<div class="error-text">{{ error }}</div>{% endfor %}
                     </div>
                 </div>
             </div>
@@ -110,25 +125,24 @@
                 <p>Selecciona la carrera, grupo y estado actual.</p>
                 <div class="field-grid">
                     <div class="form-field">
-                        <label>{{ form.career.label }} <span class="badge-info">*</span></label>
-                        {{ form.career }}
-                        {% for error in form.career.errors %}<div class="error-text">{{ error }}</div>{% endfor %}
+                        <label>{{ form.carrera.label }} <span class="badge-info">*</span></label>
+                        {{ form.carrera }}
+                        {% for error in form.carrera.errors %}<div class="error-text">{{ error }}</div>{% endfor %}
                     </div>
                     <div class="form-field">
-                        <label>{{ form.group.label }} <span class="badge-info">*</span></label>
-                        {{ form.group }}
-                        {% for error in form.group.errors %}<div class="error-text">{{ error }}</div>{% endfor %}
+                        <label>{{ form.grupo.label }} <span class="badge-info">*</span></label>
+                        {{ form.grupo }}
+                        {% for error in form.grupo.errors %}<div class="error-text">{{ error }}</div>{% endfor %}
                     </div>
                     <div class="form-field">
-                        <label>{{ form.status.label }} <span class="badge-info">*</span></label>
-                        {{ form.status }}
-                        {% for error in form.status.errors %}<div class="error-text">{{ error }}</div>{% endfor %}
+                        <label>{{ form.estado.label }} <span class="badge-info">*</span></label>
+                        {{ form.estado }}
+                        {% for error in form.estado.errors %}<div class="error-text">{{ error }}</div>{% endfor %}
                     </div>
-                    <div class="form-field full-row">
-                        <label>{{ form.notes.label }}</label>
-                        {{ form.notes }}
-                        {% if form.notes.help_text %}<div class="form-note">{{ form.notes.help_text }}</div>{% endif %}
-                        {% for error in form.notes.errors %}<div class="error-text">{{ error }}</div>{% endfor %}
+                    <div class="form-field">
+                        <label>{{ form.fecha_inscripcion.label }} <span class="badge-info">*</span></label>
+                        {{ form.fecha_inscripcion }}
+                        {% for error in form.fecha_inscripcion.errors %}<div class="error-text">{{ error }}</div>{% endfor %}
                     </div>
                 </div>
                 {% if form.non_field_errors %}

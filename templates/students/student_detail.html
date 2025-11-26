@@ -64,12 +64,16 @@
                 <strong>{{ student.full_name }}</strong>
             </div>
             <div class="info-field">
-                <span class="info-label">Fecha de registro</span>
-                <strong>{{ student.created_at|date:"d/m/Y" }}</strong>
+                <span class="info-label">Fecha de nacimiento</span>
+                <strong>{{ student.fecha_nacimiento|date:"d/m/Y" }}</strong>
             </div>
             <div class="info-field">
                 <span class="info-label">Matrícula</span>
                 <strong>{{ student.matricula }}</strong>
+            </div>
+            <div class="info-field">
+                <span class="info-label">Fecha de inscripción</span>
+                <strong>{{ student.fecha_inscripcion|date:"d/m/Y" }}</strong>
             </div>
         </div>
     </div>
@@ -79,15 +83,15 @@
         <div class="info-grid">
             <div class="info-field">
                 <span class="info-label">Correo electrónico</span>
-                <strong>{{ student.email }}</strong>
+                <strong>{{ student.correo }}</strong>
             </div>
             <div class="info-field">
                 <span class="info-label">Teléfono</span>
-                <strong>{{ student.phone }}</strong>
+                <strong>{{ student.telefono }}</strong>
             </div>
             <div class="info-field">
-                <span class="info-label">Notas</span>
-                <strong>{{ student.notes|default:'Sin notas registradas' }}</strong>
+                <span class="info-label">Dirección</span>
+                <strong>{{ student.direccion }}</strong>
             </div>
         </div>
     </div>
@@ -97,25 +101,29 @@
         <div class="info-grid">
             <div class="info-field">
                 <span class="info-label">Carrera</span>
-                <strong>{{ student.career }}</strong>
+                <strong>{{ student.carrera.nombre }}</strong>
             </div>
             <div class="info-field">
                 <span class="info-label">Grupo</span>
-                <strong>{{ student.group }}</strong>
+                <strong>{{ student.grupo }}</strong>
             </div>
             <div class="info-field">
                 <span class="info-label">Estado</span>
                 <span>
-                    {% if student.status == 'inscrito' %}
+                    {% if student.estado == 'Inscrito' %}
                         <span class="status-pill status-inscrito">Inscrito</span>
-                    {% elif student.status == 'baja_temporal' %}
+                    {% elif student.estado == 'Baja temporal' %}
                         <span class="status-pill status-baja-temporal">Baja temporal</span>
-                    {% elif student.status == 'baja_definitiva' %}
+                    {% elif student.estado == 'Baja definitiva' %}
                         <span class="status-pill status-baja-definitiva">Baja definitiva</span>
                     {% else %}
                         <span class="status-pill status-egresado">Egresado</span>
                     {% endif %}
                 </span>
+            </div>
+            <div class="info-field">
+                <span class="info-label">Última actualización</span>
+                <strong>{{ student.updated_at|date:"d/m/Y H:i" }}</strong>
             </div>
         </div>
     </div>
