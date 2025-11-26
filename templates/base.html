@@ -107,45 +107,49 @@
     <div class="app-shell">
         <header class="app-header">
             <div class="topbar">
-                <a class="brand" href="{% url 'students:dashboard' %}">
-                    <span class="brand-icon"><svg class="icon" aria-hidden="true"><use href="#icon-graduation"></use></svg></span>
-                    <div class="brand-text">
-                        <span class="brand-title">Sistema de Registro</span>
-                        <small class="brand-subtitle">Estudiantes</small>
-                    </div>
-                </a>
-                <button class="nav-toggle" aria-label="Abrir menú" aria-expanded="false" aria-controls="main-nav">
-                    <span></span>
-                    <span></span>
-                    <span></span>
-                </button>
-                <nav id="main-nav" class="main-nav">
-                    {% with current=request.resolver_match.url_name student_urls='student_list student_create student_update student_detail student_delete' %}
-                    <a class="nav-link {% if current == 'dashboard' %}is-active{% endif %}" href="{% url 'students:dashboard' %}"><svg class="icon" aria-hidden="true"><use href="#icon-gauge"></use></svg><span>Inicio</span></a>
-                    <a class="nav-link {% if current in student_urls %}is-active{% endif %}" href="{% url 'students:student_list' %}"><svg class="icon" aria-hidden="true"><use href="#icon-users"></use></svg><span>Estudiantes</span></a>
-                    <a class="nav-link {% if current == 'universities' %}is-active{% endif %}" href="{% url 'students:universities' %}"><svg class="icon" aria-hidden="true"><use href="#icon-building"></use></svg><span>API Externa</span></a>
-                    {% endwith %}
-                </nav>
+                <div class="topbar-inner app-container">
+                    <a class="brand" href="{% url 'students:dashboard' %}">
+                        <span class="brand-icon"><svg class="icon" aria-hidden="true"><use href="#icon-graduation"></use></svg></span>
+                        <div class="brand-text">
+                            <span class="brand-title">Sistema de Registro</span>
+                            <small class="brand-subtitle">Estudiantes</small>
+                        </div>
+                    </a>
+                    <button class="nav-toggle" aria-label="Abrir menú" aria-expanded="false" aria-controls="main-nav">
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                    </button>
+                    <nav id="main-nav" class="main-nav">
+                        {% with current=request.resolver_match.url_name student_urls='student_list student_create student_update student_detail student_delete' %}
+                        <a class="nav-link {% if current == 'dashboard' %}is-active{% endif %}" href="{% url 'students:dashboard' %}"><svg class="icon" aria-hidden="true"><use href="#icon-gauge"></use></svg><span>Inicio</span></a>
+                        <a class="nav-link {% if current in student_urls %}is-active{% endif %}" href="{% url 'students:student_list' %}"><svg class="icon" aria-hidden="true"><use href="#icon-users"></use></svg><span>Estudiantes</span></a>
+                        <a class="nav-link {% if current == 'universities' %}is-active{% endif %}" href="{% url 'students:universities' %}"><svg class="icon" aria-hidden="true"><use href="#icon-building"></use></svg><span>API Externa</span></a>
+                        {% endwith %}
+                    </nav>
+                </div>
             </div>
         </header>
 
         <main class="app-main">
-            {% if messages %}
-                <div class="alerts-stack">
-                    {% for message in messages %}
-                        <div class="app-alert app-alert-{{ message.tags }}">
-                            <span class="alert-icon" aria-hidden="true"></span>
-                            <div class="alert-body">{{ message }}</div>
-                            <button class="alert-close" type="button" aria-label="Cerrar">×</button>
-                        </div>
-                    {% endfor %}
-                </div>
-            {% endif %}
-            {% block content %}{% endblock %}
+            <div class="app-container">
+                {% if messages %}
+                    <div class="alerts-stack">
+                        {% for message in messages %}
+                            <div class="app-alert app-alert-{{ message.tags }}">
+                                <span class="alert-icon" aria-hidden="true"></span>
+                                <div class="alert-body">{{ message }}</div>
+                                <button class="alert-close" type="button" aria-label="Cerrar">×</button>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+                {% block content %}{% endblock %}
+            </div>
         </main>
 
         <footer class="app-footer">
-            <div class="footer-inner">
+            <div class="footer-inner app-container">
                 <span class="muted">Sistema de Registro de Estudiantes</span>
                 <small class="muted">&copy; 2025 Equipo Docente</small>
             </div>
