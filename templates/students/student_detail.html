@@ -7,9 +7,9 @@
         <p class="page-subtitle">Matrícula {{ student.matricula }}</p>
     </div>
     <div class="actions-row">
-        <a class="button button-secondary" href="{% url 'students:student_list' %}"><i class="bi bi-arrow-left"></i> Volver</a>
-        <a class="button button-primary" href="{% url 'students:student_update' student.pk %}"><i class="bi bi-pencil"></i> Editar</a>
-        <a class="button button-danger" href="{% url 'students:student_delete' student.pk %}"><i class="bi bi-trash"></i> Eliminar</a>
+        <a class="button button-secondary" href="{% url 'students:student_list' %}"><svg class="icon" aria-hidden="true"><use href="#icon-arrow-left"></use></svg> Volver</a>
+        <a class="button button-primary" href="{% url 'students:student_update' student.pk %}"><svg class="icon" aria-hidden="true"><use href="#icon-pencil"></use></svg> Editar</a>
+        <a class="button button-danger" href="{% url 'students:student_delete' student.pk %}"><svg class="icon" aria-hidden="true"><use href="#icon-trash"></use></svg> Eliminar</a>
     </div>
 </div>
 
@@ -59,6 +59,6 @@
 <div class="app-card">
     <h5>Información relacionada</h5>
     <p class="page-subtitle">Consulta universidades relevantes por país para contextualizar tu programa.</p>
-    <a class="button button-secondary" href="{% url 'students:universities' %}"><i class="bi bi-building"></i> Explorar universidades</a>
+    <a class="button button-secondary" href="{% url 'students:universities' %}"><svg class="icon" aria-hidden="true"><use href="#icon-building"></use></svg> Explorar universidades</a>
 </div>
 {% endblock %}

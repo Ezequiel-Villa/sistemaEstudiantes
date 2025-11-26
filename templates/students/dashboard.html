@@ -7,52 +7,45 @@
         <p class="page-subtitle">Resumen general del sistema de registro de estudiantes.</p>
     </div>
     <div class="actions-row">
-        <a class="button button-secondary" href="{% url 'students:student_list' %}"><i class="bi bi-table"></i> Ver estudiantes</a>
-        <a class="button button-primary" href="{% url 'students:student_create' %}"><i class="bi bi-person-plus"></i> Nuevo estudiante</a>
+        <a class="button button-secondary" href="{% url 'students:student_list' %}"><svg class="icon" aria-hidden="true"><use href="#icon-table"></use></svg> Ver estudiantes</a>
+        <a class="button button-primary" href="{% url 'students:student_create' %}"><svg class="icon" aria-hidden="true"><use href="#icon-user-plus"></use></svg> Nuevo estudiante</a>
     </div>
 </div>
 
 <div class="metrics-grid">
     <div class="metric-tile">
-        <div class="icon-circle icon-primary"><i class="bi bi-people"></i></div>
+        <div class="icon-circle icon-primary"><svg class="icon" aria-hidden="true"><use href="#icon-users"></use></svg></div>
         <div>
             <p class="text-muted">Total de estudiantes</p>
             <h3>{{ students_total }}</h3>
         </div>
     </div>
     <div class="metric-tile">
-        <div class="icon-circle icon-success"><i class="bi bi-check-circle"></i></div>
+        <div class="icon-circle icon-success"><svg class="icon" aria-hidden="true"><use href="#icon-check-circle"></use></svg></div>
         <div>
             <p class="text-muted">Inscritos</p>
             <h3>{{ status_counts.inscrito }}</h3>
         </div>
     </div>
     <div class="metric-tile">
-        <div class="icon-circle icon-warning"><i class="bi bi-exclamation-circle"></i></div>
+        <div class="icon-circle icon-warning"><svg class="icon" aria-hidden="true"><use href="#icon-alert-circle"></use></svg></div>
         <div>
             <p class="text-muted">Baja temporal</p>
             <h3>{{ status_counts.baja_temporal }}</h3>
         </div>
     </div>
     <div class="metric-tile">
-        <div class="icon-circle icon-danger"><i class="bi bi-dash-circle"></i></div>
+        <div class="icon-circle icon-danger"><svg class="icon" aria-hidden="true"><use href="#icon-minus-circle"></use></svg></div>
         <div>
             <p class="text-muted">Baja definitiva</p>
             <h3>{{ status_counts.baja_definitiva }}</h3>
         </div>
     </div>
     <div class="metric-tile">
-        <div class="icon-circle icon-info"><i class="bi bi-mortarboard"></i></div>
+        <div class="icon-circle icon-info"><svg class="icon" aria-hidden="true"><use href="#icon-graduation"></use></svg></div>
         <div>
             <p class="text-muted">Egresados</p>
             <h3>{{ status_counts.egresado }}</h3>
-        </div>
-    </div>
-    <div class="metric-tile">
-        <div class="icon-circle icon-primary"><i class="bi bi-diagram-3"></i></div>
-        <div>
-            <p class="text-muted">Grupos distintos</p>
-            <h3>{{ groups_count }}</h3>
         </div>
     </div>
 </div>
@@ -64,7 +57,7 @@
                 <h4>Estadísticas por grupo y carrera</h4>
                 <p class="page-subtitle">Generadas con pandas</p>
             </div>
-            <a class="button button-ghost" href="{% url 'students:student_list' %}"><i class="bi bi-table"></i> Ver tabla completa</a>
+            <a class="button button-ghost" href="{% url 'students:student_list' %}"><svg class="icon" aria-hidden="true"><use href="#icon-table"></use></svg> Ver tabla completa</a>
         </div>
         {% if stats_by_group %}
             <div class="table-responsive">
@@ -121,12 +114,12 @@
                 <p class="page-subtitle">Consulta universidades por país usando la API de Hipolabs.</p>
             </div>
         </div>
-        <a class="button button-primary" href="{% url 'students:universities' %}"><i class="bi bi-building"></i> Ver universidades</a>
+        <a class="button button-primary" href="{% url 'students:universities' %}"><svg class="icon" aria-hidden="true"><use href="#icon-building"></use></svg> Ver universidades</a>
         <div class="section-grid">
             <h6 class="text-muted">Acciones rápidas</h6>
             <div class="actions-row">
-                <a class="button button-secondary" href="{% url 'students:student_create' %}"><i class="bi bi-person-plus"></i> Nuevo estudiante</a>
-                <a class="button button-secondary" href="{% url 'students:student_list' %}"><i class="bi bi-search"></i> Buscar estudiantes</a>
+                <a class="button button-secondary" href="{% url 'students:student_create' %}"><svg class="icon" aria-hidden="true"><use href="#icon-user-plus"></use></svg> Nuevo estudiante</a>
+                <a class="button button-secondary" href="{% url 'students:student_list' %}"><svg class="icon" aria-hidden="true"><use href="#icon-search"></use></svg> Buscar estudiantes</a>
             </div>
         </div>
     </div>

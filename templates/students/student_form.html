@@ -6,7 +6,7 @@
         <h1 class="page-title">{{ is_edit|yesno:'Editar estudiante,Nuevo estudiante' }}</h1>
         <p class="page-subtitle">Completa los datos obligatorios del estudiante.</p>
     </div>
-    <a class="button button-secondary" href="{% url 'students:student_list' %}"><i class="bi bi-arrow-left"></i> Volver</a>
+    <a class="button button-secondary" href="{% url 'students:student_list' %}"><svg class="icon" aria-hidden="true"><use href="#icon-arrow-left"></use></svg> Volver</a>
 </div>
 
 <form method="post" novalidate>
@@ -86,7 +86,7 @@
 
     <div class="actions-row" style="justify-content: flex-end; margin-top: 16px;">
         <a class="button button-secondary" href="{% url 'students:student_list' %}">Cancelar</a>
-        <button class="button button-primary" type="submit"><i class="bi bi-save"></i> Guardar estudiante</button>
+        <button class="button button-primary" type="submit"><svg class="icon" aria-hidden="true"><use href="#icon-save"></use></svg> Guardar estudiante</button>
     </div>
 </form>
 {% endblock %}

@@ -7,7 +7,7 @@
     <form method="post" class="actions-row" style="margin-top: 12px;">
         {% csrf_token %}
         <a class="button button-secondary" href="{% url 'students:student_list' %}">Cancelar</a>
-        <button class="button button-danger" type="submit"><i class="bi bi-trash"></i> Eliminar</button>
+        <button class="button button-danger" type="submit"><svg class="icon" aria-hidden="true"><use href="#icon-trash"></use></svg> Eliminar</button>
     </form>
 </div>
 {% endblock %}

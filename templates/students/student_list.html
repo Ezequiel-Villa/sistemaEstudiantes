@@ -7,8 +7,12 @@
         <p class="page-subtitle">Administra el registro completo de estudiantes.</p>
     </div>
     <div class="actions-row">
-        <a class="button button-secondary" href="{% url 'students:dashboard' %}"><i class="bi bi-speedometer2"></i> Dashboard</a>
-        <a class="button button-primary" href="{% url 'students:student_create' %}"><i class="bi bi-person-plus"></i> Agregar estudiante</a>
+        <a class="button button-secondary" href="{% url 'students:dashboard' %}"><svg class="icon" aria-hidden="true"><use href="#icon-gauge"></use></svg> Dashboard</a>
+        <a class="button button-primary" href="{% url 'students:student_create' %}"><svg class="icon" aria-hidden="true"><use href="#icon-user-plus"></use></svg> Agregar estudiante</a>
+    </div>
+    <div class="actions-row" style="margin-top: 12px;">
+        <a class="button button-ghost" href="{% url 'students:export_csv' %}"><svg class="icon" aria-hidden="true"><use href="#icon-download"></use></svg> Exportar CSV</a>
+        <a class="button button-ghost" href="{% url 'students:export_excel' %}"><svg class="icon" aria-hidden="true"><use href="#icon-save"></use></svg> Exportar Excel</a>
     </div>
 </div>
 
@@ -38,7 +42,7 @@
             </select>
         </div>
         <div class="form-section" style="align-self: end;">
-            <button class="button button-primary" type="submit"><i class="bi bi-funnel"></i> Filtrar</button>
+            <button class="button button-primary" type="submit"><svg class="icon" aria-hidden="true"><use href="#icon-filter"></use></svg> Filtrar</button>
         </div>
     </form>
 
@@ -76,9 +80,9 @@
                         </td>
                         <td>
                             <div class="table-actions">
-                                <a class="button button-ghost button-sm" href="{% url 'students:student_detail' student.pk %}"><i class="bi bi-eye"></i></a>
-                                <a class="button button-ghost button-sm" href="{% url 'students:student_update' student.pk %}"><i class="bi bi-pencil"></i></a>
-                                <a class="button button-danger button-sm" href="{% url 'students:student_delete' student.pk %}"><i class="bi bi-trash"></i></a>
+                                <a class="button button-ghost button-sm" href="{% url 'students:student_detail' student.pk %}"><svg class="icon" aria-hidden="true"><use href="#icon-eye"></use></svg></a>
+                                <a class="button button-ghost button-sm" href="{% url 'students:student_update' student.pk %}"><svg class="icon" aria-hidden="true"><use href="#icon-pencil"></use></svg></a>
+                                <a class="button button-danger button-sm" href="{% url 'students:student_delete' student.pk %}"><svg class="icon" aria-hidden="true"><use href="#icon-trash"></use></svg></a>
                             </div>
                         </td>
                     </tr>
