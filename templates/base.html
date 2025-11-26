@@ -108,7 +108,7 @@
     <div class="page-shell">
         <header class="app-header">
             <div class="topbar">
-                <div class="layout-container">
+                <div class="app-container">
                     <div class="topbar-inner">
                         <a class="brand" href="{% url 'students:dashboard' %}">
                             <span class="brand-mark"><svg class="icon" aria-hidden="true"><use href="#icon-graduation"></use></svg></span>
@@ -133,7 +133,7 @@
         </header>
 
         <main class="page-main">
-            <div class="layout-container">
+            <div class="app-container">
                 {% if messages %}
                     <div class="alert-stack">
                         {% for message in messages %}
@@ -150,7 +150,7 @@
         </main>
 
         <footer class="app-footer">
-            <div class="layout-container">
+            <div class="app-container">
                 <div class="footer-inner">
                     <span class="muted">Sistema de Registro de Estudiantes</span>
                     <small class="muted">&copy; 2025 Equipo Docente</small>

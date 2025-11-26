@@ -19,10 +19,13 @@
 </div>
 
 <div class="surface">
-    <form class="form-grid" method="get" style="margin-bottom: 14px;">
+    <form class="form-grid filter-grid" method="get" style="margin-bottom: 14px;">
         <div class="form-field">
             <label>Buscar por nombre o matrícula</label>
-            <input type="text" name="q" value="{{ query }}" class="input-control" placeholder="Ej: Juan" />
+            <div class="input-adorned">
+                <svg class="icon" aria-hidden="true"><use href="#icon-search"></use></svg>
+                <input type="text" name="q" value="{{ query }}" class="input-control" placeholder="Ej: Juan" />
+            </div>
         </div>
         <div class="form-field">
             <label>Grupo</label>
@@ -67,8 +70,8 @@
                         <td><strong>{{ student.full_name }}</strong></td>
                         <td>{{ student.matricula }}</td>
                         <td>{{ student.email }}</td>
-                        <td>{{ student.group }}</td>
-                        <td>{{ student.career }}</td>
+                    <td><span class="badge badge-tag">{{ student.group }}</span></td>
+                    <td><span class="badge badge-tag">{{ student.career }}</span></td>
                         <td>
                             {% if student.status == 'inscrito' %}
                                 <span class="badge badge-success">Inscrito</span>
@@ -82,8 +85,8 @@
                         </td>
                         <td style="text-align:right;">
                             <div class="table-actions">
-                                <a class="btn btn-ghost btn-sm" href="{% url 'students:student_detail' student.pk %}"><svg class="icon" aria-hidden="true"><use href="#icon-eye"></use></svg></a>
-                                <a class="btn btn-ghost btn-sm" href="{% url 'students:student_update' student.pk %}"><svg class="icon" aria-hidden="true"><use href="#icon-pencil"></use></svg></a>
+                                <a class="btn btn-ghost btn-sm view" href="{% url 'students:student_detail' student.pk %}"><svg class="icon" aria-hidden="true"><use href="#icon-eye"></use></svg></a>
+                                <a class="btn btn-ghost btn-sm edit" href="{% url 'students:student_update' student.pk %}"><svg class="icon" aria-hidden="true"><use href="#icon-pencil"></use></svg></a>
                                 <a class="btn btn-danger btn-sm" href="{% url 'students:student_delete' student.pk %}"><svg class="icon" aria-hidden="true"><use href="#icon-trash"></use></svg></a>
                             </div>
                         </td>
